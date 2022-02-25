@@ -6,20 +6,20 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/02/11 16:47:50 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/02/25 16:08:03 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <stdio.h>
 #include <unistd.h>
+
 int	ft_error(char *s, int errno);
 
 typedef struct s_state
 {
 	
 }				t_state;
-
 
 static int	ft_strlen(char *s)
 {
@@ -30,7 +30,6 @@ static int	ft_strlen(char *s)
 		i++;
 	return (i);
 }
-
 
 int	pipex_error(char *s)
 {
@@ -64,7 +63,6 @@ int	main(int argc, char **argv)
 		pipex_error("Invalid input. n arguments != 5\n");
 	fd_input = pipex_open_mode(argv[1], MODE_INPUT);
 	fd_output = pipex_open_mode(argv[4], MODE_OUTPUT);
-	
+
 	return (0);
-	
 }
