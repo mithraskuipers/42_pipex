@@ -5,8 +5,15 @@
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/02/11 15:02:53 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/02/25 11:40:24 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/02/25 11:51:09 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+
+int	main(void)
+{
+	printf("Hey");	
+	return (0);
+}
