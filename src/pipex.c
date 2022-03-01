@@ -6,9 +6,23 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/01 14:48:28 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/01 15:06:26 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+
+
+	dup2(pipefd[1], STDOUT_FILENO);
+
+
+Als een process de stdoutput gebruikt om te printen,
+gaat het niet naar stdout, maar naar de write deel van de pipe
+
+	dup2(pipefd[0], STDIN_FILENO);
+
+Als een proces uit stdin leest, doet het dat niet,
+maar leest het uit read gedeelte van pipe
+
 
 #include "pipex.h"
 #include <stdio.h>
@@ -191,6 +205,10 @@ int	pipex_error(char *s)
 	return (1);
 }
 */
+
+
+
+
 
 int	pipex_open_mode(char *filename, int mode)
 {
