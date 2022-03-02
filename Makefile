@@ -6,14 +6,15 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/02/25 11:49:19 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/02 16:26:35 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= pipex
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS = 
+#CFLAGS		= -Wall -Wextra -Werror
 #CFLAGS		= -Wall -fsanitize=address
 RM			= rm -f
 
@@ -22,7 +23,8 @@ DIR_SRC		= ./src/
 
 INC = -I include
 
-SRC =	pipex.c
+SRC =	pipex.c \
+		utils_libft.c
 
 SRC_FULLPATH = $(addprefix $(DIR_SRC), $(SRC))
 OBJ_FULLPATH = $(SRC_FULLPATH:.c=.o)
