@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/02 18:04:03 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/04 14:36:49 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	pipex_open_mode(char *filename, int mode)
 	return (1);
 }
 
-char *get_path(char *s, char **envp) // "PATH"
+char *get_paths(char *s, char **envp)
 {
 	int i;
 
@@ -68,47 +68,118 @@ int		valid_cmds(char *cmd1, char *cmd2, char **envp)
 }
 */
 
-
-void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp)
+char *find_cmd_path(char *cmd, char **envp)
 {
-	int	fd_pipe[2];
-	int pid;
-	
-	pipe(fd_pipe);
-	pid = fork();
-	
-	if (pid < 0)
-		return (perror("Fork: "));
-	
-	// child
-	if (pid == 0)
+	int		i;
+	char	*path;
+	char	**paths;
+	char	*tmp;
+	char	**cmds;
+
+	i = 0;
+	path = get_paths("PATH", envp);
+	paths = ft_split(path, ':');
+	cmds = ft_split(cmd, ' ');
+	while (paths[i])
 	{
-		dup2(fd_input, STDIN_FILENO);
-		close(fd_pipe[0]);
-		dup2(fd_pipe[1], STDOUT_FILENO);
-		//execute(???);
+		tmp = ft_strjoin(ft_strjoin(paths[i], "/"), cmds[0]);
+		if (access(tmp, F_OK) == 0)
+		{
+			free (path);
+			free (paths);
+			return (tmp);
+		}
+		i++;
 	}
-	// parent
-	if (pid > 0)
+	free (path);
+	free (paths);
+	exit (1);
+	//return (NULL);
+}
+
+//make re && ./pipex infile ls wc outfile
+
+/*
+void	free_me(char *s)
+{
+	if (s)
 	{
-		dup2(fd_output, STDOUT_FILENO);
-		close(fd_pipe[1]);
-		dup2(fd_pipe[0], STDIN_FILENO);
+		free (s);
+		//s = NULL;
 	}
 }
+*/
+
+//void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp)
+char	*check_cmd_path(char *cmd, char **envp)
+{
+	char *cmd_path;
+	cmd_path = find_cmd_path(cmd, envp);
+	if (!cmd_path)
+		exit(1);
+	return (cmd_path);
+}
+
+int	pipex(char **argv, char **envp)
+{
+	char *cmd1;
+	char *cmd2;
+
+	//cmd1 = check_cmd_path(argv[2], envp);
+	cmd1 = "/bin/ls";
+	cmd2 = check_cmd_path(argv[3], envp);
+	printf("%s\n", cmd1);
+	//printf("%s\n", cmd2);
+	//execve(cmd1, argv[2], envp);
+	//printf("%s", argv[2]);
+}
+
+/*
+int		d_pipe[2];
+int		pid;
+
+pipe(fd_pipe);
+pid = fork();
+
+if (pid < 0)
+	return (perror("Fork: "));
+
+// child
+if (pid == 0)
+{
+	dup2(fd_input, STDIN_FILENO);
+	close(fd_pipe[0]);
+	dup2(fd_pipe[1], STDOUT_FILENO);
+	//execute(???);
+}
+// parent
+if (pid > 0)
+{
+	dup2(fd_output, STDOUT_FILENO);
+	close(fd_pipe[1]);
+	dup2(fd_pipe[0], STDIN_FILENO);
+}
+*/
 
 int	main(int argc, char **argv, char **envp)
 {
-	char *path;
-	char **split_path;
-	printf("%d", access("/bin/ls", F_OK));
-	path = get_path("PATH", envp);
-	split_path = ft_split(path, ':');
+	//printf("%d", access("/bin/ls", F_OK)); // 0 is goed, -1 is fout
+	if (argc != 5)
+		return (0);
+	pipex(argv, envp);
+
+
+	// voor iedere path, strjoin de cmd
+	// probeer dan access
+	// als access, execve
+
 	
+	//cmd_path = ft_strjoin()
+	//printf("%s", cmd);
+	//printf("%s", ft_split(argv[2], ' '));
 
 	/*
 	char *fullpath
-		
 	ft_split(cmd)[0]
 	while (split_path[i])
 	{
@@ -119,10 +190,7 @@ int	main(int argc, char **argv, char **envp)
 			free(fullpath)
 			fullpath = NULL
 	}
-		
-		
 	*/
-	
 
 	/*
 	int fd_input;
@@ -138,3 +206,4 @@ int	main(int argc, char **argv, char **envp)
 	*/
 	return (0);
 }
+

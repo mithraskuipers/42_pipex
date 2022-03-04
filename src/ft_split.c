@@ -6,9 +6,11 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 21:37:19 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/02 16:25:32 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/04 11:07:33 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "pipex.h"
 
 static int	ft_countparts(const char *s, char c)
 {
