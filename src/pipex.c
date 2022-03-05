@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/05 17:52:29 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/05 18:02:53 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,31 @@ maar leest het uit read gedeelte van pipe
 */
 
 #include "pipex.h"
+
+void	dp_clean(char **dp)
+{
+	size_t	i;
+
+	i = 0;
+	while (dp[i])
+	{
+		free(dp[i]);
+		i++;
+	}
+	free(dp);
+}
+
+void	free_all(t_pipex pipex_env)
+{
+	if (pipex_env.cmd1_program)
+		free (pipex_env.cmd1_program);
+	if (pipex_env.cmd2_program)
+		free (pipex_env.cmd2_program);
+	if (pipex_env.cmd1_args)
+		dp_clean(pipex_env.cmd1_args);
+	if (pipex_env.cmd2_args)
+		dp_clean(pipex_env.cmd2_args);
+}
 
 int	pipex_open_mode(char *filename, int mode)
 {
@@ -71,6 +96,16 @@ char *find_cmd_path(char *cmd, char **envp)
 
 	i = 0;
 	path = get_paths("PATH", envp);
+	if (!path)
+	{
+		exit (1); 
+		// add error message
+	}
+	if (path && path[0] == '\0')
+	{
+		free(path);
+		// add error message no path found
+	}
 	paths = ft_split(path, ':');
 	cmds = ft_split(cmd, ' ');
 	while (paths[i])
@@ -79,7 +114,7 @@ char *find_cmd_path(char *cmd, char **envp)
 		if (access(tmp, F_OK) == 0)
 		{
 			free (path);
-			free (paths);
+			free (paths); // LEAK. DOUBLE POINTER
 			return (tmp);
 		}
 		i++;
@@ -89,30 +124,7 @@ char *find_cmd_path(char *cmd, char **envp)
 	exit (1);
 }
 
-void	dp_clean(char **dp)
-{
-	size_t	i;
 
-	i = 0;
-	while (dp[i])
-	{
-		free(dp[i]);
-		i++;
-	}
-	free(dp);
-}
-
-void	free_all(t_pipex pipex_env)
-{
-	if (pipex_env.cmd1_program)
-		free (pipex_env.cmd1_program);
-	if (pipex_env.cmd2_program)
-		free (pipex_env.cmd2_program);
-	if (pipex_env.cmd1_args)
-		dp_clean(pipex_env.cmd1_args);
-	if (pipex_env.cmd2_args)
-		dp_clean(pipex_env.cmd2_args);
-}
 
 //void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp)
 char	*check_cmd_path(char *cmd, char **envp)
