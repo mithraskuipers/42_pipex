@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/04 14:15:13 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/05 11:56:30 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int		ft_error(char *s, int errno);
 //int	pipex_error(char *s);
 int		pipex_open_mode(char *filename, int mode);
 //void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp);
-int		pipex(char **argv, char **envp);
+int		pipex(char **argv, char **envp, int fd_in, int fd_out);
 int		child_process(int fd_input, char *cmd1);
 char	**ft_split(char const *s, char c);
 

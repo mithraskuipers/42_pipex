@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/04 14:36:49 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/05 17:52:29 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,13 @@ char *get_paths(char *s, char **envp)
 	return (NULL);
 }
 
-/*
-void	execute(char *path, char *args, char **envp)
+typedef struct	s_pipex
 {
-	
-}
-
-int		valid_cmds(char *cmd1, char *cmd2, char **envp)
-{
-	char **paths;
-
-	paths = ft_split(en)
-
-}
-*/
+	char *cmd1_program;
+	char *cmd2_program;
+	char **cmd1_args;
+	char **cmd2_args;
+}				t_pipex;
 
 char *find_cmd_path(char *cmd, char **envp)
 {
@@ -94,21 +87,32 @@ char *find_cmd_path(char *cmd, char **envp)
 	free (path);
 	free (paths);
 	exit (1);
-	//return (NULL);
 }
 
-//make re && ./pipex infile ls wc outfile
-
-/*
-void	free_me(char *s)
+void	dp_clean(char **dp)
 {
-	if (s)
+	size_t	i;
+
+	i = 0;
+	while (dp[i])
 	{
-		free (s);
-		//s = NULL;
+		free(dp[i]);
+		i++;
 	}
+	free(dp);
 }
-*/
+
+void	free_all(t_pipex pipex_env)
+{
+	if (pipex_env.cmd1_program)
+		free (pipex_env.cmd1_program);
+	if (pipex_env.cmd2_program)
+		free (pipex_env.cmd2_program);
+	if (pipex_env.cmd1_args)
+		dp_clean(pipex_env.cmd1_args);
+	if (pipex_env.cmd2_args)
+		dp_clean(pipex_env.cmd2_args);
+}
 
 //void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp)
 char	*check_cmd_path(char *cmd, char **envp)
@@ -120,19 +124,98 @@ char	*check_cmd_path(char *cmd, char **envp)
 	return (cmd_path);
 }
 
-int	pipex(char **argv, char **envp)
+int	pipex(char **argv, char **envp, int fd_in, int fd_out)
 {
-	char *cmd1;
-	char *cmd2;
+	t_pipex pipex_env;
 
-	//cmd1 = check_cmd_path(argv[2], envp);
-	cmd1 = "/bin/ls";
-	cmd2 = check_cmd_path(argv[3], envp);
-	printf("%s\n", cmd1);
-	//printf("%s\n", cmd2);
-	//execve(cmd1, argv[2], envp);
+	int pid1;
+	int pid2;
+	int fd_pipes[2];
+
+	pipex_env.cmd1_program = check_cmd_path(argv[2], envp);
+	pipex_env.cmd2_program= check_cmd_path(argv[3], envp);
 	//printf("%s", argv[2]);
+	pipex_env.cmd1_args = ft_split(argv[2], ' ');
+	pipex_env.cmd2_args = ft_split(argv[3], ' ');
+	pipe(fd_pipes);
+	pid1 = fork(); // makes exact copy of the running process
+	// int FD_CPY_STDIN = dup(0);
+	// int FD_CPY_STDOUT = dup(1);
+
+	if (pid1 < 0)
+		perror("Forking failed.\n");
+	// child process
+	else if (pid1 == 0)
+	{
+		printf("Child is going to DIE\n");
+		close(0);
+		dup2(fd_in, 0);
+		// close(fd_pipes[0]);
+		close(1);
+		dup2(fd_pipes[1], 1); // kan nu schrijven naar pipe
+		execve(pipex_env.cmd1_program, pipex_env.cmd1_args, envp); // gaat nu schrijven naar pipe
+		exit(1);
+	}
+	else if (pid1 > 0)
+	{
+		//waitpid(pid1, NULL, 0); // anders kan pid1==0 te laat gebeuren
+		// waitpid(-1, 0, 0);
+		wait(NULL);
+		close(fd_pipes[1]);
+		printf("Child is DEAD\n");
+
+		pid2 = fork();
+		if (pid2 < 0)
+			perror("Forking failed.\n");
+		else if (pid2 == 0)
+		{
+			close(0);
+			dup2(fd_pipes[0], 0); // als die moet lezen, lees dan uit pipe (hier is door child in geschreven)
+			close(1);
+			dup2(fd_out, 1); // als die moet schrijven,schrijf dan naar fd_out
+			// printf("!!!!\n");
+			// close(fd_pipes[0]);
+			execve(pipex_env.cmd2_program, pipex_env.cmd2_args, envp); // gaat nu schrijven naar pipe
+			exit(1);
+		}
+		else if (pid2 > 0)
+			wait(NULL);
+		close(fd_pipes[0]);
+		close(fd_in);
+		close(fd_out);
+		
+			// waitpid(-1, 0, 0);
+			//waitpid(pid2, NULL, 0);
+		printf("Ha;p!");
+	}
+	//while (1);
+	return (0);
 }
+
+// als het gaat om een pointer is 0 == 0x0 == NULL
+
+int	main(int argc, char **argv, char **envp)
+{
+	//printf("%d", access("/bin/ls", F_OK)); // 0 is goed, -1 is fout
+	if (argc != 5)
+		perror("Invalid input. Please input 4 arguments.\n");
+
+	int fd_in;
+	int fd_out;
+
+	fd_in = open("infile", O_RDONLY);
+	// PROTECT
+	fd_out = open("outfile", O_RDWR | O_APPEND |  O_CREAT, 0666);
+	// PROTECT
+	//write(fd_out, "Hallo", 5);
+	pipex(argv, envp, fd_in, fd_out);
+
+	//printf("%d", fd_in);
+	//printf("%d", fd_out);
+	return (0);
+}
+
+
 
 /*
 int		d_pipe[2];
@@ -160,50 +243,3 @@ if (pid > 0)
 	dup2(fd_pipe[0], STDIN_FILENO);
 }
 */
-
-int	main(int argc, char **argv, char **envp)
-{
-	//printf("%d", access("/bin/ls", F_OK)); // 0 is goed, -1 is fout
-	if (argc != 5)
-		return (0);
-	pipex(argv, envp);
-
-
-	// voor iedere path, strjoin de cmd
-	// probeer dan access
-	// als access, execve
-
-	
-	//cmd_path = ft_strjoin()
-	//printf("%s", cmd);
-	//printf("%s", ft_split(argv[2], ' '));
-
-	/*
-	char *fullpath
-	ft_split(cmd)[0]
-	while (split_path[i])
-	{
-		fullpath = strjoin(split_path[i], ft_split(cmd[0], ' ')
-		if (access(fullpath))
-			return *fullpath
-		else
-			free(fullpath)
-			fullpath = NULL
-	}
-	*/
-
-	/*
-	int fd_input;
-	int fd_output;
-
-	if (argc != 5)
-		perror("Invalid input. Please input 4 arguments.\n");
-	fd_input = pipex_open_mode(argv[1], MODE_INPUT);
-	fd_output = pipex_open_mode(argv[4], MODE_OUTPUT);
-	pipex(fd_input, fd_output, cmd1, cmd2, envp);
-	//close(fd_input);
-	//close(fd_output);
-	*/
-	return (0);
-}
-
