@@ -22,12 +22,24 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <sys/wait.h>
+
+typedef struct	s_pipex
+{
+	char *cmd1_program;
+	char *cmd2_program;
+	char **cmd1_args;
+	char **cmd2_args;
+	int fd_in;
+	int fd_out;
+}				t_pipex;
 
 int		ft_error(char *s, int errno);
 //int	pipex_error(char *s);
+void	exit_all(char *s);
 int		pipex_open_mode(char *filename, int mode);
 //void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp);
-int		pipex(char **argv, char **envp, int fd_in, int fd_out);
+int		pipex(char **argv, char **envp, t_pipex pipex_env);
 int		child_process(int fd_input, char *cmd1);
 char	**ft_split(char const *s, char c);
 
