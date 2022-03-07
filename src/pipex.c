@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// als het gaat om een pointer is 0 == 0x0 == NULL
+
 #include "pipex.h"
 
 void	exit_all(char *s)
@@ -31,16 +33,16 @@ void	dp_clean(char **dp)
 	free(dp);
 }
 
-void	free_all(t_pipex pipex_env, char *s)
+void	free_all(t_pipex env, char *s)
 {
-	if (pipex_env.cmd1_program)
-		free (pipex_env.cmd1_program);
-	if (pipex_env.cmd2_program)
-		free (pipex_env.cmd2_program);
-	if (pipex_env.cmd1_args)
-		dp_clean(pipex_env.cmd1_args);
-	if (pipex_env.cmd2_args)
-		dp_clean(pipex_env.cmd2_args);
+	if (env.cmd1)
+		free (env.cmd1);
+	if (env.cmd2)
+		free (env.cmd2);
+	if (env.cmd1args)
+		dp_clean(env.cmd1args);
+	if (env.cmd2args)
+		dp_clean(env.cmd2args);
 	perror(s);
 }
 
@@ -52,9 +54,7 @@ char *get_paths(char *s, char **envp)
 	while (envp[i])
 	{
 		if (!ft_strncmp(s, envp[i], ft_strlen(s)))
-		{
 			return (ft_strdup(&envp[i][ft_strchr(envp[i], '=') + 1]));
-		}
 		i++;
 	}
 	return (NULL);
@@ -65,7 +65,7 @@ char *find_cmd_path(char *cmd, char **envp)
 	int		i;
 	char	*path;
 	char	**paths;
-	char	*tmp;
+	char	*tmp_path;
 	char	**cmds;
 
 	i = 0;
@@ -73,17 +73,23 @@ char *find_cmd_path(char *cmd, char **envp)
 	if (!path)
 		exit_all("Error. Failed to get PATH from env.");
 	if (path && path[0] == '\0')
-		exit_all("Error. PATH is empty.");
+		exit_all("Error. PATH from env is empty.");
 	paths = ft_split(path, ':');
+	if (!paths)
+		exit_all("Error. Failed to parse PATH from env.");
 	cmds = ft_split(cmd, ' ');
+	if (!cmds)
+		exit_all("Error. Failed to parse user command input.");
 	while (paths[i])
 	{
-		tmp = ft_strjoin(ft_strjoin(paths[i], "/"), cmds[0]);
-		if (access(tmp, F_OK) == 0)
+		tmp_path = ft_strjoin(ft_strjoin(paths[i], "/"), cmds[0]);
+		if (!tmp_path)
+			exit_all("Error. Failed to join PATH directory with command.");
+		if (access(tmp_path, F_OK) == 0)
 		{
 			free (path);
 			dp_clean(paths);
-			return (tmp);
+			return (tmp_path);
 		}
 		i++;
 	}
@@ -101,73 +107,88 @@ char	*check_cmd_path(char *cmd, char **envp)
 	return (cmd_path);
 }
 
-int	pipex(char **argv, char **envp, t_pipex pipex_env)
+void	child(int a, int b, char *prog, char **prog_args, char **envp)
 {
+	close(0);
+	dup2(a, 0);
+	close(1);
+	dup2(b, 1);
+	execve(prog, prog_args, envp);
+	exit(1);
+}
 
-	int pid1;
-	int pid2;
-	int fd_pipes[2];
+void	close_fd(t_pipex env)
+{
+	int nbytes;
+	char c;
 
-	pipex_env.cmd1_program = check_cmd_path(argv[2], envp);
-	pipex_env.cmd2_program= check_cmd_path(argv[3], envp);
-	pipex_env.cmd1_args = ft_split(argv[2], ' ');
-	pipex_env.cmd2_args = ft_split(argv[3], ' ');
-	pipe(fd_pipes);
-	pid1 = fork(); // makes exact copy of the running process
-	if (pid1 < 0)
-		free_all(pipex_env, "Forking failed.");
-	else if (pid1 == 0)
-	{
-		close(0);
-		dup2(pipex_env.fd_in, 0);
-		close(1);
-		dup2(fd_pipes[1], 1);
-		execve(pipex_env.cmd1_program, pipex_env.cmd1_args, envp);
-		exit(1);
-	}
-	else if (pid1 > 0)
+	nbytes = read(env.fd_in, &c, 1);
+	if (nbytes == -1)
+		close (env.fd_in);
+	nbytes = read(env.fd_out, &c, 1);
+	if (nbytes == -1)
+		close (env.fd_out);
+	nbytes = read(env.fd_pipes[0], &c, 1);
+	if (nbytes == -1)
+		close (env.fd_pipes[0]);
+	nbytes = read(env.fd_pipes[1], &c, 1);
+	if (nbytes == -1)
+		close (env.fd_pipes[1]);
+}
+
+int	pipex(char **argv, char **envp, t_pipex env)
+{
+	env.cmd1 = check_cmd_path(argv[2], envp);
+	env.cmd2 = check_cmd_path(argv[3], envp);
+	env.cmd1args = ft_split(argv[2], ' ');
+	env.cmd2args = ft_split(argv[3], ' ');
+	pipe(env.fd_pipes);
+	env.pid1 = fork();
+	if (env.pid1 < 0)
+		free_all(env, "Forking failed.");
+	else if (env.pid1 == 0)
+		child(env.fd_in, env.fd_pipes[1], env.cmd1, env.cmd1args, envp);
+	else if (env.pid1 > 0)
 	{
 		wait(NULL);
-		close(fd_pipes[1]);
-
-		pid2 = fork();
-		if (pid2 < 0)
-			free_all(pipex_env, "Forking failed.");
-		else if (pid2 == 0)
-		{
-			close(0);
-			dup2(fd_pipes[0], 0);
-			close(1);
-			dup2(pipex_env.fd_out, 1);
-			execve(pipex_env.cmd2_program, pipex_env.cmd2_args, envp);
-			exit(1);
-		}
-		else if (pid2 > 0)
+		close(env.fd_pipes[1]);
+		env.pid2 = fork();
+		if (env.pid2 < 0)
+			free_all(env, "Forking failed.");
+		else if (env.pid2 == 0)
+			child(env.fd_pipes[0], env.fd_out, env.cmd2, env.cmd2args, envp);
+		else if (env.pid2 > 0)
 			wait(NULL);
-		close(fd_pipes[0]);
-		close(pipex_env.fd_in);
-		close(pipex_env.fd_out);
+		close_fd(env);
 	}
 	return (0);
 }
-
-
-
-// als het gaat om een pointer is 0 == 0x0 == NULL
 
 int	main(int argc, char **argv, char **envp)
 {
 	if (argc != 5)
 		perror("Invalid input. Please input 4 arguments.\n");
 
-	t_pipex pipex_env;
+	t_pipex env;
 
-	pipex_env.fd_in = open("infile", O_RDONLY);
-	if (!pipex_env.fd_in)
+	env.fd_in = open("infile", O_RDONLY);
+	if (!env.fd_in)
 		exit_all("Failed reading the output file.");
-	pipex_env.fd_out = open("outfile", O_RDWR | O_APPEND |  O_CREAT, 0666);
-	if (!pipex_env.fd_out)
+	env.fd_out = open("outfile", O_RDWR | O_APPEND |  O_CREAT, 0666);
+	if (!env.fd_out)
 		exit_all("Failed reading the output file.");
-	pipex(argv, envp, pipex_env);
+	pipex(argv, envp, env);
+
+	/*
+	int fdnew;
+	fdnew = open("infile", O_RDONLY);
+	printf("fd of fdnew = %d\n", fdnew);
+	close(fdnew);	
+	char c;
+	printf("fd of fdnew = %d\n", fdnew);
+	int tmp;
+	tmp = read(fdnew, &c, 1);
+	printf("HOEVEEL GELEZEN? %d", tmp);
+	*/
 	return (0);
 }

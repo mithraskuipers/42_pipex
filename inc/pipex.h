@@ -26,20 +26,24 @@
 
 typedef struct	s_pipex
 {
-	char *cmd1_program;
-	char *cmd2_program;
-	char **cmd1_args;
-	char **cmd2_args;
+	char *cmd1;
+	char *cmd2;
+	char **cmd1args;
+	char **cmd2args;
 	int fd_in;
 	int fd_out;
+	int fd_pipes[2];
+	int pid1;
+	int pid2;
 }				t_pipex;
 
 int		ft_error(char *s, int errno);
+void	close_fd(t_pipex env);
 //int	pipex_error(char *s);
 void	exit_all(char *s);
 int		pipex_open_mode(char *filename, int mode);
 //void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp);
-int		pipex(char **argv, char **envp, t_pipex pipex_env);
+int		pipex(char **argv, char **envp, t_pipex env);
 int		child_process(int fd_input, char *cmd1);
 char	**ft_split(char const *s, char c);
 
