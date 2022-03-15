@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/15 11:30:50 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/15 13:37:53 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,25 @@ typedef struct	s_pipex
 	char **cmd2args;
 	int fd_in;
 	int fd_out;
-	int fd_pipes[2];
+	int fd_pipe[2];
 	int pid1;
 	int pid2;
+	char *tmp_path;
+	char	**paths;
+	char	**cmds;
+	char	*path;
+	
 }				t_pipex;
 
 int		ft_error(char *s, int errno);
 void	close_fd(t_pipex env);
 //int	pipex_error(char *s);
 void	exit_all(char *s);
+void	exit_env_clean(char *s, t_pipex *env);
+
 int		pipex_open_mode(char *filename, int mode);
 //void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp);
-int		pipex(char **argv, char **envp, t_pipex env);
+int		pipex(char **argv, char **envp, t_pipex *env);
 int		child_process(int fd_input, char *cmd1);
 char	**ft_split(char const *s, char c);
 
