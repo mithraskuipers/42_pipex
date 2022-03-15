@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/05 18:02:53 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/15 11:33:19 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,15 @@ char *find_cmd_path(char *cmd, char **envp)
 		exit_all("Error. Failed to parse user command input.");
 	while (paths[i])
 	{
-		tmp_path = ft_strjoin(ft_strjoin(paths[i], "/"), cmds[0]);
+		//tmp_path = ft_strjoin(ft_strjoin(paths[i], "/"), cmds[0]);
+		tmp_path = ft_strjoin(paths[i], cmds[0]);
+		printf("joined: %s\n\n\n\n", tmp_path);
 		if (!tmp_path)
 			exit_all("Error. Failed to join PATH directory with command.");
 		if (access(tmp_path, F_OK) == 0)
 		{
 			free (path);
+			free (cmds);
 			dp_clean(paths);
 			return (tmp_path);
 		}
@@ -178,6 +181,7 @@ int	main(int argc, char **argv, char **envp)
 	if (!env.fd_out)
 		exit_all("Failed reading the output file.");
 	pipex(argv, envp, env);
+	system("leaks pipex");
 
 	/*
 	int fdnew;
