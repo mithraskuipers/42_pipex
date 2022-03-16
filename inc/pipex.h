@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:48:33 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:57:39 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	*ft_memset(void *b, int c, size_t len);
 char	*get_paths(char *s, char **envp, t_pipex *env);
 void	*ft_calloc(size_t count, size_t size);
 char	*find_cmd_path(char *cmd, char **envp, t_pipex *env);
-void	child(int fd1, int fd2, char *prog, char **prog_args, char **envp);
+void	child(int fd1, int fd2, t_cmd cmdset, char **envp);
 void	close_fd(t_pipex env);
 
 #endif

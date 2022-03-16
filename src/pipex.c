@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:02:47 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:49:40 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:59:10 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	pipex(char **argv, char **envp, t_pipex *env)
 	if (env->pid1 < 0)
 		free_all(env, "Forking failed.");
 	else if (env->pid1 == 0)
-		child(env->fd_in, env->fd_pipe[1], env->cmdset[0].cmd, env->cmdset[0].cmdargs, envp);
+		child(env->fd_in, env->fd_pipe[1], env->cmdset[0], envp);
 	else if (env->pid1 > 0)
 	{
 		wait(NULL);
@@ -34,7 +34,7 @@ int	pipex(char **argv, char **envp, t_pipex *env)
 		if (env->pid2 < 0)
 			free_all(env, "Forking failed.");
 		else if (env->pid2 == 0)
-			child(env->fd_pipe[0], env->fd_out, env->cmdset[1].cmd, env->cmdset[1].cmdargs, envp);
+			child(env->fd_pipe[0], env->fd_out, env->cmdset[1], envp);
 		else if (env->pid2 > 0)
 			wait(NULL);
 		close_fd(*env);

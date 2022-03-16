@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/16 12:59:58 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:50:35 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:59:25 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,13 @@ char	*find_cmd_path(char *cmd, char **envp, t_pipex *env)
 	exit (1);
 }
 
-void	child(int fd1, int fd2, char *prog, char **prog_args, char **envp)
+void	child(int fd1, int fd2, t_cmd cmdset, char **envp)
 {
 	close(0);
 	dup2(fd1, 0);
 	close(1);
 	dup2(fd2, 1);
-	execve(prog, prog_args, envp);
+	execve(cmdset.cmd, cmdset.cmdargs, envp);
 	exit(1);
 }
 
