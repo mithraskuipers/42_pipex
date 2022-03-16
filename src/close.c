@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/16 13:31:57 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:49:40 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 15:02:54 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,5 @@ void	free_all(t_pipex *env, char *s)
 	if (env->cmdset[1].cmdargs)
 		dp_clean(env->cmdset[1].cmdargs);
 	perror(s);
+	exit (1);
 }

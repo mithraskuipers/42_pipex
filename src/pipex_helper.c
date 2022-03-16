@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/16 12:59:58 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:59:25 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 15:44:32 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	child(int fd1, int fd2, t_cmd cmdset, char **envp)
 	dup2(fd1, 0);
 	close(1);
 	dup2(fd2, 1);
+	//system("ls -la > result.txt")
 	execve(cmdset.cmd, cmdset.cmdargs, envp);
 	exit(1);
 }

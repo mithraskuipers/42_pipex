@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/15 13:45:18 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:56:37 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 15:25:03 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ int	main(int argc, char **argv, char **envp)
 	env = ft_calloc(1, sizeof(t_pipex));
 	if (!env)
 		exit_all("Failed allocating memory for struct.");
-	env->fd_in = open("infile", O_RDONLY);
+	env->fd_in = open(argv[1], O_RDONLY);
 	if (!env->fd_in)
 		exit_all("Failed reading the output file.");
-	env->fd_out = open("outfile", O_RDWR | O_APPEND | O_CREAT, 0666);
+	env->fd_out = open(argv[4], O_RDWR);
 	if (!env->fd_out)
 		exit_all("Failed reading the output file.");
 	pipex(argv, envp, env);
-	system("leaks pipex");
+	//system("leaks pipex");
 	return (0);
 }
