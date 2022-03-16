@@ -6,39 +6,11 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/02 16:26:12 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:34:23 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:36:20 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-int	ft_strchr(const char *s, int c)
-{
-	int		i;
-	char	*s_uc;
-
-	i = 0;
-	s_uc = (char *)s;
-	while (s_uc[i])
-	{
-		if (s_uc[i] == (char)c)
-			return (i);
-		i++;
-	}
-	if (s_uc[i] == (char)c)
-		return (i);
-	return (-1);
-}
 
 void	*ft_calloc(size_t count, size_t size)
 {

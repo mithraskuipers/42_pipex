@@ -6,14 +6,13 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/16 13:32:10 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/16 13:40:19 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= pipex
 
 CC			= gcc
-#CFLAGS = 
 CFLAGS		= -Wall -Wextra -Werror
 #CFLAGS		= -fsanitize=address
 RM			= rm -f
@@ -26,6 +25,7 @@ INC = -I include
 SRC =	main.c \
 		new.c \
 		close.c \
+		ft_utils.c \
 		pipex.c \
 		ft_string.c \
 		ft_split.c

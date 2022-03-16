@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/16 12:59:58 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:34:35 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:36:10 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,6 @@ char	*get_paths(char *s, char **envp, t_pipex *env)
 	if (!env->paths)
 		exit_all("Error. Failed to parse PATH from env.");
 	return (NULL);
-}
-
-void	*ft_calloc(size_t count, size_t size)
-{
-	void			*ptr;
-	size_t			i;
-	size_t			len;
-	unsigned char	*b_uc;
-	unsigned char	c;
-
-	ptr = malloc(count * size);
-	if (!(ptr))
-		return (NULL);
-	i = 0;
-	len = count * size;
-	b_uc = (unsigned char *)ptr;
-	c = 0;
-	while (i < len)
-	{
-		b_uc[i] = c;
-		i++;
-	}
-	return (ptr);
 }
 
 char	*find_cmd_path(char *cmd, char **envp, t_pipex *env)

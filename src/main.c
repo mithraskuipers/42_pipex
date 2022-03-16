@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/15 13:45:18 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 12:43:50 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:36:32 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ int	main(int argc, char **argv, char **envp)
 	if (!env->fd_out)
 		exit_all("Failed reading the output file.");
 	pipex(argv, envp, env);
-	system("leaks pipex");
+	//system("leaks pipex");
 	return (0);
 }
