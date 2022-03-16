@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/02 16:26:12 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/15 14:33:22 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 11:53:57 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ size_t	ft_strlen(const char *s)
 
 int	ft_strchr(const char *s, int c)
 {
-	int	i;
+	int		i;
 	char	*s_uc;
 
 	i = 0;

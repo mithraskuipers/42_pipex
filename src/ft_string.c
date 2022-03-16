@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/04 11:13:30 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/15 13:52:03 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 11:38:54 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,32 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		i++;
 	}
 	return (0);
+}
+
+int	ft_strchr(const char *s, int c)
+{
+	int		i;
+	char	*s_uc;
+
+	i = 0;
+	s_uc = (char *)s;
+	while (s_uc[i])
+	{
+		if (s_uc[i] == (char)c)
+			return (i);
+		i++;
+	}
+	if (s_uc[i] == (char)c)
+		return (i);
+	return (-1);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
