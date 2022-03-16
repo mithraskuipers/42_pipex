@@ -26,7 +26,6 @@ int		pipex(char **argv, char **envp, t_pipex *env)
 	return (0);
 }
 
-
 char	*find_cmd_path(char *cmd, char **envp, t_pipex *env, int cmdnbr)
 {
 	int	i;
