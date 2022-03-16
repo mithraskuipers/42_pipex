@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/15 11:16:35 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/16 11:21:41 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,9 +23,9 @@ DIR_SRC		= ./src/
 
 INC = -I include
 
-SRC =	pipex.c \
-		utils1.c \
-		utils2.c \
+SRC =	main.c \
+		pipex.c \
+		utils.c \
 		ft_split.c
 
 

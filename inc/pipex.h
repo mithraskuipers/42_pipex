@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/15 13:37:53 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 11:27:29 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,14 @@ typedef struct	s_pipex
 	
 }				t_pipex;
 
-int		ft_error(char *s, int errno);
-void	close_fd(t_pipex env);
-//int	pipex_error(char *s);
+int	pipex(char **argv, char **envp, t_pipex *env);
+void	*ft_calloc(size_t count, size_t size);
 void	exit_all(char *s);
-void	exit_env_clean(char *s, t_pipex *env);
-
-int		pipex_open_mode(char *filename, int mode);
-//void	pipex(int fd_input, int fd_output, char *cmd1, char *cmd2, char **envp);
-int		pipex(char **argv, char **envp, t_pipex *env);
-int		child_process(int fd_input, char *cmd1);
 char	**ft_split(char const *s, char c);
-
-int	ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strjoin(char *s1, char *s2);
 size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s1);
 int	ft_strchr(const char *s, int c);
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
-char	*ft_strjoin(char *s1, char *s2);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
 #endif
