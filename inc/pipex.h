@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:45:06 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:48:33 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,15 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
+typedef struct	s_cmd
+{
+	char *cmd;
+	char **cmdargs;
+}				t_cmd;
+
 typedef struct	s_pipex
 {
-	char *cmd1;
-	char *cmd2;
-	char **cmd1args;
-	char **cmd2args;
+	t_cmd cmdset[2];
 	int fd_in;
 	int fd_out;
 	int fd_pipe[2];

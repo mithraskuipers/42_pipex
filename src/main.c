@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/15 13:45:18 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:36:32 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:56:37 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ int	main(int argc, char **argv, char **envp)
 	t_pipex	*env;
 
 	if (argc != 5)
-		perror("Invalid input. Please input 4 arguments.\n");
+		exit_all("Invalid input. Please input 4 arguments.");
 	env = ft_calloc(1, sizeof(t_pipex));
+	if (!env)
+		exit_all("Failed allocating memory for struct.");
 	env->fd_in = open("infile", O_RDONLY);
 	if (!env->fd_in)
 		exit_all("Failed reading the output file.");
@@ -26,6 +28,6 @@ int	main(int argc, char **argv, char **envp)
 	if (!env->fd_out)
 		exit_all("Failed reading the output file.");
 	pipex(argv, envp, env);
-	//system("leaks pipex");
+	system("leaks pipex");
 	return (0);
 }

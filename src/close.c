@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/16 13:31:57 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:32:46 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:49:40 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ void	find_cmd_path_cleaner(t_pipex *env)
 		free (env->path);
 	if (env->cmds)
 		dp_clean(env->cmds);
-	if (env->cmd1args)
-		dp_clean(env->cmd1args);
-	if (env->cmd2args)
-		dp_clean(env->cmd2args);
+	if (env->cmdset[0].cmdargs)
+		dp_clean(env->cmdset[0].cmdargs);
+	if (env->cmdset[1].cmdargs)
+		dp_clean(env->cmdset[1].cmdargs);
 }
 
 void	exit_env_clean(char *s, t_pipex *env)
@@ -54,13 +54,13 @@ void	exit_env_clean(char *s, t_pipex *env)
 
 void	free_all(t_pipex *env, char *s)
 {
-	if (env->cmd1)
-		free (env->cmd1);
-	if (env->cmd2)
-		free (env->cmd2);
-	if (env->cmd1args)
-		dp_clean(env->cmd1args);
-	if (env->cmd2args)
-		dp_clean(env->cmd2args);
+	if (env->cmdset[0].cmd)
+		free (env->cmdset[0].cmd);
+	if (env->cmdset[1].cmd)
+		free (env->cmdset[1].cmd);
+	if (env->cmdset[0].cmdargs)
+		dp_clean(env->cmdset[0].cmdargs);
+	if (env->cmdset[1].cmdargs)
+		dp_clean(env->cmdset[1].cmdargs);
 	perror(s);
 }
