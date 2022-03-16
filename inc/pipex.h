@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 11:39:11 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:03:58 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,17 @@ size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s1);
 int		ft_strchr(const char *s, int c);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+
+void	dp_clean(char **dp);
+void	find_cmd_path_cleaner(t_pipex *env);
+void	exit_env_clean(char *s, t_pipex *env);
+
+void	free_all(t_pipex *env, char *s);
+void	*ft_memset(void *b, int c, size_t len);
+char	*get_paths(char *s, char **envp, t_pipex *env);
+void	*ft_calloc(size_t count, size_t size);
+char	*find_cmd_path(char *cmd, char **envp, t_pipex *env);
+void	child(int a, int b, char *prog, char **prog_args, char **envp);
+void	close_fd(t_pipex env);
 
 #endif

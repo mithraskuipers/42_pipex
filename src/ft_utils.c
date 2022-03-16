@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/02 16:26:12 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 11:53:57 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:34:23 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,19 @@ void	*ft_calloc(size_t count, size_t size)
 		i++;
 	}
 	return (ptr);
+}
+
+void	*ft_memset(void *b, int c, size_t len)
+{
+	size_t			i;
+	unsigned char	*b_uc;
+
+	i = 0;
+	b_uc = (unsigned char *)b;
+	while (i < len)
+	{
+		b_uc[i] = (unsigned char)c;
+		i++;
+	}
+	return (b);
 }

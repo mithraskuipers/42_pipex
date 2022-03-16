@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 21:37:19 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 12:42:54 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:04:33 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,6 @@ static int	ft_countparts(const char *s, char c)
 			i++;
 	}
 	return (nparts);
-}
-
-static void	dp_clean(char **dp)
-{
-	size_t	i;
-
-	i = 0;
-	while (dp[i])
-	{
-		free(dp[i]);
-		i++;
-	}
-	free(dp);
 }
 
 static char	*get_word(const	char *s, char c, char **dp)
