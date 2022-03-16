@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   new.c                                              :+:    :+:            */
+/*   pipex_helper.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/16 12:59:58 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 13:36:10 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:44:56 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,12 @@ char	*find_cmd_path(char *cmd, char **envp, t_pipex *env)
 	exit (1);
 }
 
-void	child(int a, int b, char *prog, char **prog_args, char **envp)
+void	child(int fd1, int fd2, char *prog, char **prog_args, char **envp)
 {
 	close(0);
-	dup2(a, 0);
+	dup2(fd1, 0);
 	close(1);
-	dup2(b, 1);
+	dup2(fd2, 1);
 	execve(prog, prog_args, envp);
 	exit(1);
 }
