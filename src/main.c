@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/17 09:59:01 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/17 15:38:20 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/17 15:43:39 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ int	main(int argc, char **argv, char **env)
 		fd_infile = openfile(argv[1], INFILE);
 		fd_outfile = openfile(argv[4], OUTFILE);
 		dup2(fd_infile, STDIN);
-		//dup2(fd_outfile, STDOUT);
+		dup2(fd_outfile, STDOUT);
 		pipex(argv[2], env, fd_outfile);
+		run_cmd(argv[3], env);
 	}
 	else
 		write(STDERR, "Invalid number of arguments.\n", 29);
@@ -113,16 +114,12 @@ void	pipex (char *cmd, char **env, int fdin)
 	}
 	else
 	{
-		//(void)fdin;
-		//run_cmd(cmd, env);
-		
 		close(fd_pipes[0]);
-		//dup2(fd_pipes[1], STDOUT);
+		dup2(fd_pipes[1], STDOUT);
 		if (fdin == STDIN)
 			exit(1);
 		else
 		{
-			//perror("HEY\n");
 			run_cmd(cmd, env);
 		}
 	}
