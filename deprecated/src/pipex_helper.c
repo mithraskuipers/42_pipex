@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/16 12:59:58 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 15:44:32 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/17 11:10:02 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,9 @@ char	*find_cmd_path(char *cmd, char **envp, t_pipex *env)
 		ft_memset(env->tmp_path, 0, ft_strlen(env->tmp_path));
 		i++;
 	}
-	find_cmd_path_cleaner(env);
-	exit (1);
+	return (cmd);
+	//find_cmd_path_cleaner(env);
+	//exit (1);
 }
 
 void	child(int fd1, int fd2, t_cmd cmdset, char **envp)

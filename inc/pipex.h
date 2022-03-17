@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/16 22:35:28 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/17 10:12:43 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,13 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include <sys/wait.h>
+
+# define STDIN 0
+# define STDOUT 1
+# define STDERR 2
+
+# define INFILE 0
+# define OUTFILE 1
 
 typedef struct s_cmd
 {
