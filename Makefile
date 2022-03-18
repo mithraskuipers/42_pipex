@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/16 22:33:56 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/18 11:39:29 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,8 @@ DIR_SRC		= ./src/
 
 INC = -I include
 
-SRC =	main.c
+SRC =	main.c \
+		ft_split.c
 
 SRC_FULLPATH = $(addprefix $(DIR_SRC), $(SRC))
 OBJ_FULLPATH = $(SRC_FULLPATH:.c=.o)

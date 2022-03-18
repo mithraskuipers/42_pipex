@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/17 10:12:43 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/18 12:06:22 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,5 @@ typedef struct s_pipex
 	char	**cmds;
 	char	*path;
 }				t_pipex;
-
 
 #endif

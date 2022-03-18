@@ -6,20 +6,26 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/17 09:59:01 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/17 15:43:39 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/18 14:06:59 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+/*
+cd ~/repos/pipex/PIPEXaminator
 
-int			openfile (char *filename, int mode);
-void		pipex (char *cmd, char **env, int fdin);
+~/repos/pipex/pipex_tester_42
+bash pipex_tester.sh m
+
+~/repos/pipex/PIPEXaminator
+bash all_tests.sh
+*/
+
+int			openfile(char *filename, int mode);
+void		pipex(char *cmd, char **env, int fdin);
 void		run_cmd(char *cmd, char **env);
-static int	ft_countparts(const char *s, char c);
-static char	*get_word(const	char *s, char c, char **dp);
 char		**ft_split(char const *s, char c);
-void		dp_clean(char **dp);
 int			find_char_pos(char *str, char c);
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strndup(char *src, int len);
@@ -29,31 +35,26 @@ int			ft_strchr(const char *s, int c);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 char		*ft_strdup(const char *s1);
 
-
-int	main(int argc, char **argv, char **env)
+int	main (int ac, char **av, char **env)
 {
-	(void)argv;
-	(void)env;
+	int	fdin;
+	int	fdout;
 
-	int fd_infile;
-	int fd_outfile;
-	
-	if (argc == 5)
+	if (ac == 5)
 	{
-		write(STDOUT, "GOOD number of arguments!\n", 27);
-		fd_infile = openfile(argv[1], INFILE);
-		fd_outfile = openfile(argv[4], OUTFILE);
-		dup2(fd_infile, STDIN);
-		dup2(fd_outfile, STDOUT);
-		pipex(argv[2], env, fd_outfile);
-		run_cmd(argv[3], env);
+		fdin = openfile(av[1], INFILE);
+		fdout = openfile(av[4], OUTFILE);
+		dup2(fdin, STDIN);
+		dup2(fdout, STDOUT);
+		pipex(av[2], env, fdin);
+		run_cmd(av[3], env);
 	}
 	else
 		write(STDERR, "Invalid number of arguments.\n", 29);
 	return (1);
 }
 
-int	openfile (char *filename, int mode)
+int	openfile(char *filename, int mode)
 {
 	if (mode == INFILE)
 	{
@@ -99,7 +100,7 @@ char	*ft_strdup(const char *s1)
 	return (dup);
 }
 
-void	pipex (char *cmd, char **env, int fdin)
+void	pipex(char *cmd, char **env, int fdin)
 {
 	pid_t	pid;
 	int		fd_pipes[2];
@@ -150,92 +151,7 @@ void	run_cmd(char *cmd, char **env)
 
 
 
-static int	ft_countparts(const char *s, char c)
-{
-	size_t	i;
-	int		nparts;
 
-	i = 0;
-	nparts = 0;
-	while (s[i])
-	{
-		if (s[i] && s[i] != c)
-		{
-			nparts++;
-			while (s[i] && s[i] != c)
-				i++;
-		}
-		else if (s[i] && s[i] == c)
-			i++;
-	}
-	return (nparts);
-}
-
-static char	*get_word(const	char *s, char c, char **dp)
-{
-	char	*word;
-	int		i;
-	int		len;
-
-	len = 0;
-	i = 0;
-	while ((s[len] != c) && s[len])
-		len++;
-	word = malloc(sizeof(char) * (len + 1));
-	if (!word)
-	{
-		dp_clean(dp);
-		return (NULL);
-	}
-	while (i < len)
-	{
-		word[i] = s[i];
-		i++;
-	}
-	word[i] = '\0';
-	return (word);
-}
-
-char	**ft_split(char const *s, char c)
-{
-	char	**dp;
-	int		i;
-	int		n;
-
-	n = ft_countparts(s, c);
-	i = 0;
-	dp = malloc(sizeof(const char *) * (n + 1));
-	if (!dp)
-		return (0);
-	dp[n] = 0;
-	while (*s == c && *s)
-		s++;
-	while (*s)
-	{
-		dp[i] = get_word(s, c, dp);
-		if (!dp[i])
-			return (NULL);
-		i++;
-		while (*s != c && *s)
-			s++;
-		while (*s == c && *s)
-			s++;
-	}
-	return (dp);
-}
-
-void	dp_clean(char **dp)
-{
-	size_t	i;
-
-	i = 0;
-	while (dp[i])
-	{
-		free(dp[i]);
-		i++;
-	}
-	free(dp);
-}
 
 int	find_char_pos(char *str, char c)
 {
@@ -248,12 +164,6 @@ int	find_char_pos(char *str, char c)
 		return (i);
 	return (-1);
 }
-
-
-
-
-
-
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -359,23 +269,23 @@ char	*find_cmd_path(char *cmd, char **env)
 	}
 	if ((!path) || (path && path[0] == '\0'))
 		return (NULL); // new onzin
-	//printf("path original: \n%s\n\n", path);
 	while (path && find_char_pos(path, ':') > -1)
 	{
 		dir = ft_strndup(path, find_char_pos(path, ':') + 1);
 		tmp_cmd_path = ft_strjoin(dir, cmd);
-		//printf("dir-->%s\n", dir);
-		//printf("tmp_cmd_path-->%s\n\n", tmp_cmd_path);
-		//printf("%s\n", tmp_cmd_path);
 		free(dir);
 		if (access(tmp_cmd_path, F_OK) == 0)
 		{
-			//printf("\nreturning tmp_cmd_path\n");
 			return (tmp_cmd_path);
 		}
 		free(tmp_cmd_path);
 		path += find_char_pos(path, ':') + 1;
 	}
-	//printf("cmd: %s", cmd);
 	return (cmd);
 }
+
+
+
+
+
+
