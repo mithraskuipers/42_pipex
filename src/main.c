@@ -6,75 +6,87 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/17 09:59:01 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/18 14:06:59 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/19 18:30:52 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
 /*
-cd ~/repos/pipex/PIPEXaminator
+~/repos/pipex/PIPEXaminator
+bash all_tests.sh
 
 ~/repos/pipex/pipex_tester_42
 bash pipex_tester.sh m
-
-~/repos/pipex/PIPEXaminator
-bash all_tests.sh
 */
 
-int			openfile(char *filename, int mode);
-void		pipex(char *cmd, char **env, int fdin);
-void		run_cmd(char *cmd, char **env);
-char		**ft_split(char const *s, char c);
-int			find_char_pos(char *str, char c);
-char		*ft_strjoin(char *s1, char *s2);
-char		*ft_strndup(char *src, int len);
-char		*find_cmd_path(char *cmd, char **env);
-size_t		ft_strlen(const char *s);
-int			ft_strchr(const char *s, int c);
-int			ft_strncmp(const char *s1, const char *s2, size_t n);
-char		*ft_strdup(const char *s1);
+int		openfile(char *filename, int mode);
+void	pipex(char *cmd, char **envp, char *base_path);
+void	run_cmd(char *cmd, char **envp, char *base_path);
+char	**ft_split(char const *s, char c);
+char	*px_strjoin(char *s1, char *s2);
+char	*ft_strndup(char *src, int len);
+char	*find_cmd_path(char *cmd, char *path);
+int		ft_strlen(const char *s);
+int		ft_strchr(const char *s, int c);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strdup(const char *s1);
+void	dp_clean(char **dp);
+void	ft_putstr_fd(char *s, int fd);
+void	error_msg(char	*cmd);
+int		read_file(char	*file);
 
-int	main (int ac, char **av, char **env)
+
+char	*get_path_base(char **envp);
+
+int		main(int argc, char **argv, char **envp)
 {
 	int	fdin;
 	int	fdout;
+	char *base_path;
 
-	if (ac == 5)
-	{
-		fdin = openfile(av[1], INFILE);
-		fdout = openfile(av[4], OUTFILE);
-		dup2(fdin, STDIN);
-		dup2(fdout, STDOUT);
-		pipex(av[2], env, fdin);
-		run_cmd(av[3], env);
-	}
+	if (argc != 5)
+		ft_putstr_fd("Invalid number of arguments.\n", 2);
 	else
-		write(STDERR, "Invalid number of arguments.\n", 29);
+	{
+		fdin = read_file(argv[1]);
+		fdout = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		if (fdin == -1)
+			exit(1);
+		dup2(fdin, 0);
+		dup2(fdout, 1);
+		base_path = get_path_base(envp);
+		pipex(argv[2], envp, base_path);
+		run_cmd(argv[3], envp, base_path);
+	}
 	return (1);
 }
 
-int	openfile(char *filename, int mode)
+int		read_file(char	*file)
 {
-	if (mode == INFILE)
-	{
-		if (access(filename, F_OK))
-		{
-			write(STDERR, "pipex: ", 7);
-			write(STDERR, filename, find_char_pos(filename, 0));
-			write(STDERR, ": No such file or directory\n", 28);
-			return (STDIN);
-		}
-		return (open(filename, O_RDONLY));
-	}
-	else
-		return (open(filename, O_CREAT | O_WRONLY | O_TRUNC,
-				S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH));
+	if (access(file, F_OK) == 0)
+		return (open(file, O_RDONLY));
+	error_msg(file);
+	return (-1);
 }
 
-size_t	ft_strlen(const char *s)
+void	ft_putstr_fd(char *s, int fd)
 {
-	size_t	i;
+	if (!s)
+		return ;
+	write(fd, s, ft_strlen(s));
+}
+
+void	error_msg(char	*cmd)
+{
+	ft_putstr_fd("pipex: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": No such file or directory\n", 2);
+}
+
+int		ft_strlen(const char *s)
+{
+	int	i;
 
 	i = 0;
 	while (s[i])
@@ -100,72 +112,62 @@ char	*ft_strdup(const char *s1)
 	return (dup);
 }
 
-void	pipex(char *cmd, char **env, int fdin)
+void	pipex(char *cmd, char **envp, char *base_path)
 {
-	pid_t	pid;
+	pid_t	process_id;
 	int		fd_pipes[2];
 
 	pipe(fd_pipes);
-	pid = fork();
-	if (pid) // parent
-	{
-		close(fd_pipes[1]);
-		dup2(fd_pipes[0], STDIN);
-		waitpid(pid, NULL, 0);
-	}
-	else
+	process_id = fork();
+	if (process_id == 0)
 	{
 		close(fd_pipes[0]);
-		dup2(fd_pipes[1], STDOUT);
-		if (fdin == STDIN)
-			exit(1);
-		else
-		{
-			run_cmd(cmd, env);
-		}
+		dup2(fd_pipes[1], 1);
+		run_cmd(cmd, envp, base_path);
+	}
+	else if (process_id > 0)
+	{
+		close(fd_pipes[1]);
+		dup2(fd_pipes[0], 0);
+		waitpid(process_id, NULL, 0);
 	}
 }
 
-void	run_cmd(char *cmd, char **env)
+char	*get_path_base(char **envp)
+{
+	int		i;
+	char	*base_path;
+	
+	base_path = ft_strdup("");
+	i = 0;
+	while (envp[i])
+	{
+		if (!ft_strncmp("PATH", envp[i], ft_strlen("PATH")))
+		{
+			base_path = ft_strdup(&envp[i][ft_strchr(envp[i], '=') + 1]);
+			return (base_path);
+		}
+		i++;
+	}
+	exit (1);
+}
+
+void	run_cmd(char *cmd, char **envp, char *base_path)
 {
 	char	**args;
-	char	*path;
-
+	char	*cmd_path;
 	args = ft_split(cmd, ' ');
-	
-	if (find_char_pos(args[0], '/') != -1) // als niet erin staat
+	cmd_path = find_cmd_path(args[0], base_path);
+	if (cmd_path == args[0])
 	{
-		path = args[0];
+		dp_clean(args);
+		error_msg(cmd);
+		exit(127);
 	}
-	else
-	{
-		path = find_cmd_path(args[0], env);
-	}
-	execve(path, args, env);
-	write(STDERR, "pipex: ", 7);
-	write(STDERR, cmd, find_char_pos(cmd, 0));
-	write(STDERR, ": command not found\n", 20);
-	exit(127);
+	execve(cmd_path, args, envp);
 }
 
-
-
-
-
-
-int	find_char_pos(char *str, char c)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i] != c)
-		i++;
-	if (str[i] == c)
-		return (i);
-	return (-1);
-}
-
-char	*ft_strjoin(char *s1, char *s2)
+char	*px_strjoin(char *s1, char *s2)
 {
 	int		i;
 	int		j;
@@ -249,43 +251,41 @@ char	*ft_strndup(char *src, int len)
 	return (s);
 }
 
-char	*find_cmd_path(char *cmd, char **env)
+void	ft_putchar_fd(char c, int fd)
 {
-	char *path;
-	int	i;
-	char *dir;
-	char *tmp_cmd_path;
-	path = ft_strdup("");
+	write(fd, &c, 1);
+}
 
-	i = 0;
-	while (env[i])
+void	ft_putnbr_fd(int n, int fd)
+{
+	unsigned int	nbr;
+
+	if (n < 0)
 	{
-		if (!ft_strncmp("PATH", env[i], ft_strlen("PATH")))
-		{
-			path = ft_strdup(&env[i][ft_strchr(env[i], '=') + 1]);
-			break ;
-		}
-		i++;
+		ft_putchar_fd('-', fd);
+		nbr = n * -1;
 	}
-	if ((!path) || (path && path[0] == '\0'))
-		return (NULL); // new onzin
-	while (path && find_char_pos(path, ':') > -1)
+	else
+		nbr = n;
+	if (nbr >= 10)
+		ft_putnbr_fd(nbr / 10, fd);
+	ft_putchar_fd(nbr % 10 + '0', fd);
+}
+
+char	*find_cmd_path(char *cmd, char *path)
+{	
+	char	*dir;
+	char	*tmp_cmd_path;
+	
+	while (path && ft_strchr(path, ':') > -1)
 	{
-		dir = ft_strndup(path, find_char_pos(path, ':') + 1);
-		tmp_cmd_path = ft_strjoin(dir, cmd);
+		dir = ft_strndup(path, ft_strchr(path, ':') + 1);
+		tmp_cmd_path = px_strjoin(dir, cmd);
 		free(dir);
 		if (access(tmp_cmd_path, F_OK) == 0)
-		{
 			return (tmp_cmd_path);
-		}
 		free(tmp_cmd_path);
-		path += find_char_pos(path, ':') + 1;
+		path = path + ft_strchr(path, ':') + 1;
 	}
 	return (cmd);
 }
-
-
-
-
-
-

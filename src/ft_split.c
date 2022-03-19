@@ -6,13 +6,13 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/18 11:39:08 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/18 11:41:04 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/19 17:22:42 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	dp_clean(char **dp)
+void	dp_clean(char **dp)
 {
 	size_t	i;
 
