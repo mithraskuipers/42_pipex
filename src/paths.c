@@ -19,8 +19,19 @@ char	*find_cmd_path(char *cmd, char *path)
 	
 	while (path && ft_strchr(path, ':') > -1)
 	{
-		dir = ft_strndup(path, ft_strchr(path, ':') + 1); // protect
-		tmp_cmd_path = px_strjoin(dir, cmd); // protect
+		dir = ft_strndup(path, ft_strchr(path, ':') + 1);
+		if (!dir)
+		{
+			free (dir);
+			exit(1);
+		}
+		tmp_cmd_path = px_strjoin(dir, cmd);
+		if (!tmp_cmd_path)
+		{
+			free (tmp_cmd_path);
+			free (dir);
+			exit (1);
+		}
 		free(dir);
 		if (access(tmp_cmd_path, F_OK) == 0)
 			return (tmp_cmd_path);
