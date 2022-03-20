@@ -1,37 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   libft.c                                            :+:    :+:            */
+/*   ft_string.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/19 20:59:29 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/19 20:59:29 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/03/20 17:07:09 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/03/20 17:07:09 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	ft_putchar_fd(char c, int fd)
-{
-	write(fd, &c, 1);
-}
-
-void	ft_putnbr_fd(int n, int fd)
-{
-	unsigned int	nbr;
-
-	if (n < 0)
-	{
-		ft_putchar_fd('-', fd);
-		nbr = n * -1;
-	}
-	else
-		nbr = n;
-	if (nbr >= 10)
-		ft_putnbr_fd(nbr / 10, fd);
-	ft_putchar_fd(nbr % 10 + '0', fd);
-}
 
 int	ft_strchr(const char *s, int c)
 {
@@ -49,24 +28,6 @@ int	ft_strchr(const char *s, int c)
 	if (s_uc[i] == (char)c)
 		return (i);
 	return (-1);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	size_t	i;
-	char	*dup;
-
-	i = 0;
-	dup = malloc((ft_strlen(s1) + 1) * sizeof(char));
-	if (!(dup))
-		return (NULL);
-	while (s1[i])
-	{
-		dup[i] = s1[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
 }
 
 char	*ft_strndup(char *src, int len)
@@ -107,11 +68,32 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	return (0);
 }
 
-void	ft_putstr_fd(char *s, int fd)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	if (!s)
-		return ;
-	write(fd, s, ft_strlen(s));
+	int		i;
+	int		j;
+	char	*s3;
+
+	i = 0;
+	j = 0;
+	s3 = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 2));
+	if (!s3)
+		return (NULL);
+	while (s1[i])
+	{
+		s3[i] = s1[i];
+		i++;
+	}
+	s3[i] = '/';
+	i++;
+	while (s2[j])
+	{
+		s3[i] = s2[j];
+		i++;
+		j++;
+	}
+	s3[i] = '\0';
+	return (s3);
 }
 
 int		ft_strlen(const char *s)

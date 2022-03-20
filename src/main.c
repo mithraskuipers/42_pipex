@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/17 09:59:01 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/20 14:22:43 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/20 22:01:47 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,14 @@ int		main(int argc, char **argv, char **envp)
 		ft_putstr_fd("Invalid number of arguments.\n", 2);
 		return (1);
 	}
-	else
-	{
-		fdin = read_file(argv[1]);
-		fdout = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		if (fdin == -1)
-			exit(1);
-		base_path = get_path(envp);
-		dup2(fdin, 0);
-		dup2(fdout, 1);
-		pipex(argv[2], envp, base_path);
-		run_cmd(argv[3], envp, base_path);		
-	}
+	fdin = read_file(argv[1]);
+	fdout = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fdin == -1)
+		exit(1);
+	base_path = get_path(envp);
+	dup2(fdin, 0);
+	dup2(fdout, 1);
+	pipex(argv[2], envp, base_path);
+	run_cmd(argv[3], envp, base_path);
 	return (0);
 }

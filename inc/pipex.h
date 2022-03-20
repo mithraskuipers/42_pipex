@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/19 21:10:11 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/20 22:07:31 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int		ft_strchr(const char *s, int c);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strdup(const char *s1);
 void	dp_clean(char **dp);
+void	ft_putstr_fd(char *s, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	error_msg(char	*cmd);
 int		read_file(char	*file);

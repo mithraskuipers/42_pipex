@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/19 21:02:08 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/20 22:08:10 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,9 +24,11 @@ INC = -I include
 
 SRC =	main.c \
 		ft_split.c \
+		ft_string.c \
+		ft_print.c \
+		close.c \
 		paths.c \
-		libft.c \
-		close.c
+		pipex.c
 
 SRC_FULLPATH = $(addprefix $(DIR_SRC), $(SRC))
 OBJ_FULLPATH = $(SRC_FULLPATH:.c=.o)
