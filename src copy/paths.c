@@ -19,8 +19,8 @@ char	*find_cmd_path(char *cmd, char *path)
 	
 	while (path && ft_strchr(path, ':') > -1)
 	{
-		dir = ft_strndup(path, ft_strchr(path, ':') + 1); // protect
-		tmp_cmd_path = px_strjoin(dir, cmd); // protect
+		dir = ft_strndup(path, ft_strchr(path, ':') + 1);
+		tmp_cmd_path = px_strjoin(dir, cmd);
 		free(dir);
 		if (access(tmp_cmd_path, F_OK) == 0)
 			return (tmp_cmd_path);
@@ -63,7 +63,7 @@ char	*get_path(char **envp)
 {
 	int		i;
 	char	*base_path;
-	
+
 	i = 0;
 	while (envp[i])
 	{
@@ -84,15 +84,15 @@ void	run_cmd(char *cmd, char **envp, char *base_path)
 {
 	char	**args;
 	char	*cmd_path;
-	args = ft_split(cmd, ' '); // protect
-	cmd_path = find_cmd_path(args[0], base_path); // protect
+	(void)envp;
+	args = ft_split(cmd, ' ');
+	cmd_path = find_cmd_path(args[0], base_path);
 	if (cmd_path == args[0])
 	{
 		dp_clean(args);
 		error_msg(cmd);
 		exit(127);
 	}
-	execve(cmd_path, args, envp);
 }
 
 char	*px_strjoin(char *s1, char *s2)
