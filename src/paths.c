@@ -89,11 +89,3 @@ char	*px_strjoin(char *s1, char *s2)
 	s3[i] = '\0';
 	return (s3);
 }
-
-int	read_file(char	*file)
-{
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY));
-	error_msg(file);
-	return (-1);
-}

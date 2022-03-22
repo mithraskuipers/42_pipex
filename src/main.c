@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/17 09:59:01 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/22 14:41:41 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/22 15:27:12 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	fdin = read_file(argv[1]);
-	fdout = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	fdout = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	if (fdin == -1)
 		exit(1);
 	base_path = get_path(envp);

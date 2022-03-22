@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/22 15:19:41 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/22 16:13:26 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ SRC =	main.c \
 		ft_print.c \
 		close.c \
 		paths.c \
+		read.c \
 		pipex.c
 
 SRC_FULLPATH = $(addprefix $(DIR_SRC), $(SRC))
