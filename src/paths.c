@@ -16,7 +16,7 @@ char	*find_cmd_path(char *cmd, char *path)
 {	
 	char	*dir;
 	char	*tmp_cmd_path;
-	
+
 	while (path && ft_strchr(path, ':') > -1)
 	{
 		dir = ft_strndup(path, ft_strchr(path, ':') + 1);
@@ -41,19 +41,11 @@ char	*find_cmd_path(char *cmd, char *path)
 	return (cmd);
 }
 
-int		read_file(char	*file)
-{
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY));
-	error_msg(file);
-	return (-1);
-}
-
 char	*get_path(char **envp)
 {
 	int		i;
 	char	*base_path;
-	
+
 	i = 0;
 	while (envp[i])
 	{
@@ -98,3 +90,10 @@ char	*px_strjoin(char *s1, char *s2)
 	return (s3);
 }
 
+int	read_file(char	*file)
+{
+	if (access(file, F_OK) == 0)
+		return (open(file, O_RDONLY));
+	error_msg(file);
+	return (-1);
+}

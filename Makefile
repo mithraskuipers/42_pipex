@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/20 22:08:10 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/21 12:59:18 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@ NAME		= pipex
 
 CC			= gcc
 CFLAGS		= -Wall -Wextra -Werror
-#CFLAGS		= -fsanitize=address
 RM			= rm -f
 
 DIR_INC		= ./inc/

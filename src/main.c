@@ -6,25 +6,17 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/17 09:59:01 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/20 22:01:47 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/22 14:41:41 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-/*
-~/repos/pipex/PIPEXaminator
-bash all_tests.sh
-
-~/repos/pipex/pipex_tester_42
-bash pipex_tester.sh m
-*/
-
-int		main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	int	fdin;
-	int	fdout;
-	char *base_path;
+	int		fdin;
+	int		fdout;
+	char	*base_path;
 
 	if (argc != 5)
 	{

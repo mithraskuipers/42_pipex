@@ -1,3 +1,0 @@
-git clone https://github.com/mariadaan/PIPEXaminator.git
-
-bash all_tests.sh
