@@ -14,7 +14,6 @@
 
 void	error_msg(char	*cmd)
 {
-	ft_putstr_fd("pipex: ", 2);
 	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": No such file or directory\n", 2);
+	ft_putstr_fd(": command not found\n", 2);
 }

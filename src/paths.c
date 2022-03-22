@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-char	*find_cmd_path(char *cmd, char *path)
+char	*get_cmd_path(char *cmd, char *path)
 {	
 	char	*dir;
 	char	*tmp_cmd_path;
@@ -22,15 +22,15 @@ char	*find_cmd_path(char *cmd, char *path)
 		dir = ft_strndup(path, ft_strchr(path, ':') + 1);
 		if (!dir)
 		{
-			free (dir);
+			free(dir);
 			exit(1);
 		}
 		tmp_cmd_path = px_strjoin(dir, cmd);
 		if (!tmp_cmd_path)
 		{
-			free (tmp_cmd_path);
-			free (dir);
-			exit (1);
+			free(tmp_cmd_path);
+			free(dir);
+			exit(1);
 		}
 		free(dir);
 		if (access(tmp_cmd_path, F_OK) == 0)
@@ -41,25 +41,25 @@ char	*find_cmd_path(char *cmd, char *path)
 	return (cmd);
 }
 
-char	*get_path(char **envp)
+char	*get_env_path(char **envp)
 {
 	int		i;
-	char	*base_path;
+	char	*env_path;
 
 	i = 0;
 	while (envp[i])
 	{
 		if (!ft_strncmp("PATH", envp[i], ft_strlen("PATH")))
 		{
-			base_path = ft_strndup(&envp[i][ft_strchr(envp[i], '=') + 1], \
+			env_path = ft_strndup(&envp[i][ft_strchr(envp[i], '=') + 1], \
 			ft_strlen(&envp[i][ft_strchr(envp[i], '=') + 1]));
-			if (!base_path)
-				exit (1);
-			return (base_path);
+			if (!env_path)
+				exit(1);
+			return (env_path);
 		}
 		i++;
 	}
-	exit (1);
+	exit(1);
 }
 
 char	*px_strjoin(char *s1, char *s2)

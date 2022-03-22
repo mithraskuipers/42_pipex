@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/22 14:40:52 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/22 16:54:27 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_strlen(const char *s);
 char	*ft_strndup(char *src, int len);
 char	**ft_split(char const *s, char c);
-char	*find_cmd_path(char *cmd, char *path);
-char	*get_path(char **envp);
+char	*get_cmd_path(char *cmd, char *path);
+char	*get_env_path(char **envp);
 char	*px_strjoin(char *s1, char *s2);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 void	error_msg(char	*cmd);;
 void	dp_clean(char **dp);
-void	pipex(char *cmd, char **envp, char *base_path);
-void	run_cmd(char *cmd, char **envp, char *base_path);
+void	pipex(char *cmd, char **envp, char *env_path);
+void	run_cmd(char *cmd, char **envp, char *env_path);
 
 #endif

@@ -12,28 +12,33 @@
 
 #include "pipex.h"
 
-void	pipex(char *cmd, char **envp, char *base_path)
+void	pipex(char *cmd, char **envp, char *env_path)
 {
 	pid_t	process_id;
 	int		fd_pipes[2];
 
-	pipe(fd_pipes);
+	if (pipe(fd_pipes) == -1)
+		exit(1);
 	process_id = fork();
-	if (process_id == 0)
+	if (process_id == -1)
+		exit(1);
+	else if (process_id == 0)
 	{
 		close(fd_pipes[0]);
-		dup2(fd_pipes[1], 1);
-		run_cmd(cmd, envp, base_path);
+		if (dup2(fd_pipes[1], 1) == -1)
+			exit(1);
+		run_cmd(cmd, envp, env_path);
 	}
-	else if (process_id > 0)
+	else
 	{
 		close(fd_pipes[1]);
-		dup2(fd_pipes[0], 0);
+		if (dup2(fd_pipes[0], 0) == -1)
+			exit(1);
 		waitpid(process_id, NULL, 0);
 	}
 }
 
-void	run_cmd(char *cmd, char **envp, char *base_path)
+void	run_cmd(char *cmd, char **envp, char *env_path)
 {
 	char	**args;
 	char	*cmd_path;
@@ -44,10 +49,10 @@ void	run_cmd(char *cmd, char **envp, char *base_path)
 		dp_clean(args);
 		exit(1);
 	}
-	cmd_path = find_cmd_path(args[0], base_path);
+	cmd_path = get_cmd_path(args[0], env_path);
 	if (!cmd_path)
 	{
-		free (cmd_path);
+		free(cmd_path);
 		dp_clean(args);
 		exit(1);
 	}
@@ -57,5 +62,6 @@ void	run_cmd(char *cmd, char **envp, char *base_path)
 		error_msg(cmd);
 		exit(127);
 	}
-	execve(cmd_path, args, envp);
+	if (execve(cmd_path, args, envp) == -1)
+		exit(1);
 }
