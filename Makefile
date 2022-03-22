@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/21 12:59:18 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/22 15:19:41 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ SRC_FULLPATH = $(addprefix $(DIR_SRC), $(SRC))
 OBJ_FULLPATH = $(SRC_FULLPATH:.c=.o)
 
 .c.o:
-	$(CC) $(CFLAGS) -I $(DIR_INC) -o $@ -c $?
+	$(CC) $(CFLAGS) -I $(DIR_INC) -c $^ -o $@
 
 $(NAME): $(OBJ_FULLPATH)
 	$(CC) -o $(NAME) $(OBJ_FULLPATH) -I $(DIR_INC)
