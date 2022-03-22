@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/22 16:13:26 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/22 17:16:09 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,10 +42,12 @@ $(NAME): $(OBJ_FULLPATH)
 all: $(NAME)
 
 clean:
-	$(RM) $(OBJ_FULLPATH)
+	@echo "Running clean"
+	@$(RM) $(OBJ_FULLPATH)
 
-fclean:
-	$(RM) $(NAME) $(OBJ_FULLPATH)
+fclean: clean
+	@echo "Running fclean"
+	@$(RM) $(NAME) $(OBJ_FULLPATH)
 
 re: fclean all
 

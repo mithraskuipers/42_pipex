@@ -24,14 +24,16 @@ void	pipex(char *cmd, char **envp, char *env_path)
 		exit(1);
 	else if (process_id == 0)
 	{
-		close(fd_pipes[0]);
+		if (close(fd_pipes[0]) == -1)
+			exit(1);
 		if (dup2(fd_pipes[1], 1) == -1)
 			exit(1);
 		run_cmd(cmd, envp, env_path);
 	}
 	else
 	{
-		close(fd_pipes[1]);
+		if (close(fd_pipes[1]) == -1)
+			exit(1);
 		if (dup2(fd_pipes[0], 0) == -1)
 			exit(1);
 		waitpid(process_id, NULL, 0);
