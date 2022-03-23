@@ -40,16 +40,8 @@ void	ft_putnbr_fd(int n, int fd)
 	ft_putchar_fd(nbr % 10 + '0', fd);
 }
 
-void	cmd_error(char	*cmd)
+void	error_msg(char	*cmd)
 {
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
-}
-
-int		file_error(char *cmd, int ret)
-{
-	ft_putstr_fd("pipex: error opening ", 2);
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd("\n", 2);
-	return (ret);
 }
