@@ -1,0 +1,13 @@
+if (fdin == -1)
+	exit(file_error(argv[1], EXIT_FAILURE));
+
+
+
+
+int		file_error(char *cmd, int ret)
+{
+	ft_putstr_fd("pipex: error opening ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd("\n", 2);
+	return (ret);
+}
