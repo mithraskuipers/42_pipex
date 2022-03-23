@@ -1,21 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   read.c                                             :+:    :+:            */
+/*   ft_countlines_fd.c                                 :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/22 16:12:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/23 17:42:02 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/01/16 12:25:14 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/03/23 14:59:15 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	read_file(char	*file)
+int	ft_countlines_fd(int fd)
 {
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY, 0777));
-	cmd_error(file);
-	return (-1);
+	char	buff[1];
+	int		count;
+	int		nbytes;
+
+	buff[0] = '\0';
+	nbytes = 1;
+	count = 0;
+	while (nbytes)
+	{
+		nbytes = read(fd, buff, 1);
+		if (ft_strchr(buff, '\n') || ft_strchr(buff, '\0'))
+		{
+			count++;
+		}
+	}
+	return (count);
 }

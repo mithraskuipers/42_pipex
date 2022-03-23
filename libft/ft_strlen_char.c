@@ -1,21 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   read.c                                             :+:    :+:            */
+/*   ft_strlen_char.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/22 16:12:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/23 17:42:02 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/01/18 18:11:47 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/03/23 14:58:41 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	read_file(char	*file)
+int	ft_strlen_char(char *s, int c)
 {
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY, 0777));
-	cmd_error(file);
-	return (-1);
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (i);
+	if (c == '\0')
+	{
+		while (s[i])
+			i++;
+		return (i);
+	}
+	else
+	{
+		while (s[i] && s[i] != c)
+		{
+			i++;
+		}
+		return (i);
+	}
 }

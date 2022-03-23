@@ -1,21 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   read.c                                             :+:    :+:            */
+/*   ft_memcpy.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/22 16:12:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/23 17:42:02 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/10/06 14:38:25 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/10/29 08:19:41 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	read_file(char	*file)
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY, 0777));
-	cmd_error(file);
-	return (-1);
+	unsigned char	*dst_uc;
+	unsigned char	*src_uc;
+	size_t			i;
+
+	dst_uc = (unsigned char *)dst;
+	src_uc = (unsigned char *)src;
+	i = 0;
+	if ((dst == NULL) && (src == NULL))
+		return (NULL);
+	while (i < n)
+	{
+		dst_uc[i] = src_uc[i];
+		i++;
+	}
+	return (dst);
 }

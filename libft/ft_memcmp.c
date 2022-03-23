@@ -1,21 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   read.c                                             :+:    :+:            */
+/*   ft_memcmp.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/22 16:12:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/23 17:42:02 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/10/09 15:11:46 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/10/27 19:26:03 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	read_file(char	*file)
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY, 0777));
-	cmd_error(file);
-	return (-1);
+	unsigned char	*s1_uc;	
+	unsigned char	*s2_uc;
+	size_t			i;
+
+	s1_uc = (unsigned char *)s1;
+	s2_uc = (unsigned char *)s2;
+	i = 0;
+	if (!(s1_uc) && (!(s2_uc)))
+		return (0);
+	while (i < n)
+	{
+		if (s1_uc[i] != s2_uc[i])
+			return (s1_uc[i] - s2_uc[i]);
+		i++;
+	}
+	return (0);
 }

@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   read.c                                             :+:    :+:            */
+/*   ft_isupper.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/22 16:12:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/23 17:42:02 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/11/17 10:09:51 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/11/17 10:31:42 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	read_file(char	*file)
+int	ft_isupper(int c)
 {
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY, 0777));
-	cmd_error(file);
-	return (-1);
+	if (c >= 'A' && c <= 'Z')
+		return (1);
+	return (0);
 }

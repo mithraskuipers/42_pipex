@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   read.c                                             :+:    :+:            */
+/*   ft_undigits_base.c                                 :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/22 16:12:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/23 17:42:02 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/11/19 16:49:20 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/11/19 16:49:22 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
-
-int	read_file(char	*file)
+int	ft_undigits_base(unsigned long long n, int base)
 {
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY, 0777));
-	cmd_error(file);
-	return (-1);
+	int	ndigits;
+
+	if (n == 0)
+		return (1);
+	ndigits = 0;
+	while (n > 0)
+	{
+		n = n / base;
+		ndigits++;
+	}
+	return (ndigits);
 }

@@ -1,21 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   read.c                                             :+:    :+:            */
+/*   ft_memchr.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/22 16:12:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/23 17:42:02 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/10/09 14:53:34 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/10/29 08:49:17 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	read_file(char	*file)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	if (access(file, F_OK) == 0)
-		return (open(file, O_RDONLY, 0777));
-	cmd_error(file);
-	return (-1);
+	unsigned char	*s_uc;
+	unsigned char	c_uc;
+	size_t			i;
+
+	i = 0;
+	s_uc = (unsigned char *)s;
+	c_uc = (unsigned char)c;
+	while (i < n)
+	{
+		if (s_uc[i] == c_uc)
+			return (&(s_uc[i]));
+		i++;
+	}
+	return (NULL);
 }

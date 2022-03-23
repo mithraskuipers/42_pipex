@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/11 15:11:52 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/22 16:54:27 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/23 17:43:08 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ char	*px_strjoin(char *s1, char *s2);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
-void	error_msg(char	*cmd);;
+void	cmd_error(char	*cmd);
+int		file_error(char *cmd, int ret);
 void	dp_clean(char **dp);
-void	pipex(char *cmd, char **envp, char *env_path);
-void	run_cmd(char *cmd, char **envp, char *env_path);
+void	pipex(char **argv, char **envp, char *env_path, int stat);
 
 #endif
