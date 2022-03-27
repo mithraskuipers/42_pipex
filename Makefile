@@ -5,49 +5,68 @@
 #                                                      +:+                     #
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
-#    Created: 2022/02/25 11:43:09 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/23 13:33:01 by mikuiper      ########   odam.nl          #
+#    Created: 2022/03/09 19:49:21 by mikuiper      #+#    #+#                  #
+#    Updated: 2022/03/27 23:06:26 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= pipex
+NAME = pipex
 
-CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror
-RM			= rm -f
+CC = gcc
+FLAGS = -Wall -Werror -Wextra
+LIB_FT = -lft -L $(FT_DIR) 
+INC = -I $(INC_DIR) -I $(FT_INC)
 
-DIR_INC		= ./inc/
-DIR_SRC		= ./src/
+FT_DIR = ./libft
+FT_INC = $(FT_DIR)/inc/
 
-INC = -I include
+INC_LST = pipex.h
+INC_DIR = ./inc/
+INC_PATHS = $(addprefix $(INC_DIR), $(INC_LST))
 
-SRC =	main.c \
-		ft_split.c \
-		ft_string.c \
-		ft_print.c \
-		paths.c \
-		read.c \
-		pipex.c
+SRCS_DIR = ./src/
+SRCS_LST = main.c
 
-SRC_FULLPATH = $(addprefix $(DIR_SRC), $(SRC))
-OBJ_FULLPATH = $(SRC_FULLPATH:.c=.o)
+SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LST))
 
-.c.o:
-	$(CC) $(CFLAGS) -I $(DIR_INC) -c $^ -o $@
+DIR_OBJ = obj/
+LST_OBJ = $(patsubst %.c, %.o, $(SRCS_LST))
+OBJ_PATHS = $(addprefix $(DIR_OBJ), $(LST_OBJ))
 
-$(NAME): $(OBJ_FULLPATH)
-	$(CC) -o $(NAME) $(OBJ_FULLPATH) -I $(DIR_INC)
+GREEN = \033[92m
+RED = \033[0;31m
+RESET = \033[0m
 
 all: $(NAME)
 
+$(NAME): $(FT) $(DIR_OBJ) $(OBJ_PATHS)
+	@$(CC) $(FLAGS) $(INC) $(OBJ_PATHS) $(LIB_FT) -o $(NAME)
+	@echo "$(GREEN)[$(NAME)] - $(GREEN)$(NAME) was compiled$(RESET)"
+
+$(DIR_OBJ):
+	@mkdir -p $(DIR_OBJ)
+
+$(DIR_OBJ)%.o : $(SRCS_DIR)%.c $(INC_PATHS)
+	@$(CC) $(FLAGS) -c $(INC) $< -o $@
+
+$(FT):
+	@echo "[$(NAME)] - $(GREEN)Compiling $(FT)...$(RESET)"
+	@$(MAKE) -sC $(FT_DIR)
+
 clean:
-	@echo "Running clean"
-	@$(RM) $(OBJ_FULLPATH)
+	@$(MAKE) -sC $(FT_DIR) clean
+	@rm -rf $(DIR_OBJ)
+	@echo "$(GREEN)[$(NAME)] - $(RED)deleted $(DIR_OBJ)$(RESET)"
+	@echo "$(GREEN)[$(NAME)] - $(RED)deleted all object files$(RESET)"
 
 fclean: clean
-	@echo "Running fclean"
-	@$(RM) $(NAME) $(OBJ_FULLPATH)
+	@rm -f $(FT)
+	@echo "$(GREEN)[$(NAME)] - $(RED)deleted $(FT)$(RESET)"
+	@rm -f $(NAME)
+	@echo "$(GREEN)[$(NAME)] - $(RED)deleted ./$(NAME)$(RESET)"
 
-re: fclean all
+re:
+	@$(MAKE) fclean
+	@$(MAKE) all
 
-PHONY: all clean fclean re
+.PHONY: all clean fclean re

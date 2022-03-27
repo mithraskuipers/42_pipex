@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/22 20:49:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/22 21:31:52 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/03/26 22:44:02 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,6 @@ char	*ft_utoa(unsigned int n);
 int		ft_countlines_fd(int fd);
 int		ft_strlen_fd(int fd);
 int		ft_strlen_char(char *s, int c);
+void	mk_putnbr_base(int nbr, int base);
 
 #endif
