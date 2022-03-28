@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/21 15:29:25 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/03/26 23:04:01 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/03/28 16:56:49 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,7 +69,8 @@ SRCS =	ft_atoi.c \
 		ft_countlines_fd.c \
 		ft_strlen_fd.c \
 		ft_strlen_char.c \
-		mk_putnbr_base.c
+		mk_putnbr_base.c \
+		ft_calloc_new.c
 
 OFILES = $(SRCS:.c=.o)
 INCLUDES = libft.h

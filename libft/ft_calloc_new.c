@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   ft_calloc2.c                                       :+:    :+:            */
+/*   ft_calloc_mk.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mkuipers <mkuipers@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/17 17:50:27 by mkuipers      #+#    #+#                 */
-/*   Updated: 2021/11/17 17:50:42 by mkuipers      ########   odam.nl         */
+/*   Updated: 2022/03/28 16:52:29 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_calloc(size_t count, size_t size)
+void	*ft_calloc_new(size_t count, size_t size)
 {
 	void			*ptr;
 	size_t			i;
