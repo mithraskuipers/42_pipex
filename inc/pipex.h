@@ -13,8 +13,12 @@
 #ifndef PIPEX_H
 # define PIPEX_H
 
-/* fork */
+/* fork & open */
 #include <sys/types.h>
+
+/* open */
+#include <sys/stat.h>
+#include <fcntl.h>
 
 /* fork & pipe */
 #include <unistd.h>
