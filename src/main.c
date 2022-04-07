@@ -76,9 +76,11 @@ void	open_file(char **argv, t_pipex *env)
 {
 	env->fd_in = open(argv[1], O_RDONLY);
 	if (env->fd_in == -1)
+	{
 		ft_putstr_fd("no such file or directory: ", 2);
 		ft_putstr_fd(argv[1], 2);
 		ft_putstr_fd("\n", 2);
+	}
 	env->fd_out = open(argv[4], O_CREAT | O_TRUNC | O_RDWR, 0777);
 	if (env->fd_out == -1)
 		msg_exit("Could not open or create output file.", 1);
