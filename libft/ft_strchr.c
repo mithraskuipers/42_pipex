@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/07 16:52:06 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/05 18:06:34 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/07 14:54:10 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,25 @@ char	*ft_strchr(const char *s, int c)
 	if (s_uc[i] == (char)c)
 		return (&s_uc[i]);
 	return (NULL);
+}
+
+
+int	ft_strchr2(const char *s, int c)
+{
+	int		i;
+	char	*s_uc;
+
+	i = 0;
+	s_uc = (char *)s;
+	while (s_uc[i])
+	{
+		if (s_uc[i] == (char)c)
+			return (i);
+		i++;
+	}
+	if (s_uc[i] == (char)c)
+		return (i);
+	return (-1);
 }
 
 /*

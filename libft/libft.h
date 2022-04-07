@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/22 20:49:59 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/05 18:11:07 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/07 15:12:56 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int		ft_strlen_char(char *s, int c);
 void	mk_putnbr_base(int nbr, int base);
 void	*ft_calloc_new(size_t count, size_t size);
 char	*ft_strndup(char *src, int len);
-int		ft_strchr_new(const char *s, int c);
+int		ft_strchr_pos(const char *s, int c);
+void	dp_clean_char(char **dp);
 
 #endif

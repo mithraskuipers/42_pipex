@@ -3,35 +3,47 @@ NAME		= pipex
 CC			= gcc
 CFLAGS		= -Wall -Wextra -Werror
 
-INCLUDES	= -I./inc
+INCS	= -I./inc
 
-SRCDIR		= ./src/
+SRC_DIR		= ./src/
 
-SRCS		= $(SRCDIR)main.c
+SRCS		= $(SRC_DIR)main.c
 
 OBJS		= $(SRCS:.c=.o)
 
-LIBFTPATH	= ./libft/
-LIBFTMAKE	= $(MAKE) -C $(LIBFTPATH)
-LIBFT		= -L$(LIBFTPATH) -lft
+FT_DIR	= 	./libft/
+FT_MAKE	= $(MAKE) -C $(FT_DIR)
+FT_LIB		= -L$(FT_DIR) -lft
 
 .PHONY: all clean fclean re
+
+
+GREEN = \033[92m
+NOCOLOR = \033[0;38m
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(LIBFTMAKE)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBFT)
+	@echo "\n$(GREEN)[pipex] - Compiling $(NAME)..$(NOCOLOR)"
+	@$(FT_MAKE)
+	@$(CC) $(CFLAGS) $(INCS) -o $(NAME) $(OBJS) $(FT_LIB)
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(INCS) -c -o $@ $<
 
 clean:
-	$(LIBFTMAKE) clean
-	$(RM) $(OBJS)
+	$(FT_MAKE) clean
+	@echo "$(GREEN)[pipex] - Running clean..$(NOCOLOR)"
+	@echo "$(GREEN)[pipex] - Removing object files..$(NOCOLOR)"
+	@$(RM) $(OBJS)
+	@echo "$(GREEN)[pipex] - Finished running clean!$(NOCOLOR)"
 
-fclean: clean
-	$(LIBFTMAKE) fclean
-	$(RM) $(NAME)
+fclean:
+	#@$(FT_MAKE) fclean
+	@echo "$(GREEN)[pipex] - Running fclean..$(NOCOLOR)"
+	@echo "$(GREEN)[pipex] - Removing object files..$(NOCOLOR)"
+	@echo "$(GREEN)[pipex] - Finished running fclean!$(NOCOLOR)"
+	@$(RM) $(OBJS)
+	@$(RM) $(NAME)
 
 re: fclean all

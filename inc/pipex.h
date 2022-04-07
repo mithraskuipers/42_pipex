@@ -35,7 +35,8 @@ typedef struct	s_pipex
 	int		fd_in;
 	int		fd_out;
 	char	*env_path;
-	char	*cmd_path;
+	char	*cmd_path1;
+	char	*cmd_path2;
 	pid_t	process_id1;
 	pid_t	process_id2;
 }				t_pipex;

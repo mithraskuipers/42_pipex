@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/21 15:29:25 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/04/05 18:11:17 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/04/07 15:12:27 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,7 +72,8 @@ SRCS =	ft_atoi.c \
 		mk_putnbr_base.c \
 		ft_calloc_new.c \
 		ft_strndup.c \
-		ft_strchr_new.c
+		ft_strchr_pos.c \
+		dp_clean_char.c
 
 OFILES = $(SRCS:.c=.o)
 INCLUDES = libft.h
@@ -80,7 +81,7 @@ INCLUDES = libft.h
 all: $(NAME)
 
 $(NAME): $(OFILES) $(INCLUDES)
-	@echo "$(NOCOLOR)[libft] - Compiling library..$(NOCOLOR)"
+	@echo "$(GREEN)[libft] - Compiling library..$(NOCOLOR)"
 	@ar rcs $(NAME) $?
 	@echo "$(GREEN)[libft] - Done!$(NOCOLOR)"
 
@@ -93,7 +94,7 @@ clean:
 	@/bin/rm -f $(OFILES)
 	@echo "$(GREEN)[libft] - Finished running clean!$(NOCOLOR)"
 
-fclean:    clean
+fclean: clean
 	@echo "$(GREEN)[libft] - Running fclean..$(NOCOLOR)"
 	@echo "$(GREEN)[libft] - Removing libft.a..$(NOCOLOR)"
 	@/bin/rm -f $(NAME)
