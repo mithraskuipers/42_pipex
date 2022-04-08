@@ -15,23 +15,23 @@
 
 #include "pipex.h"
 
-int		msg_return (char *cmd, int ret_status);
+int	msg_return (char *cmd, int ret_status);
 void	msg_exit(char *cmd, int exit_status);
-int		check_input_validity(int argc, char **argv, t_pipex *env);
+int	check_input_validity(int argc, char **argv, t_pipex *env);
 void	open_file(char **argv, t_pipex *env);
 void	pipes_close(t_pipex	*env);
 char	*get_env_path(char **envp);
 char	*get_cmd_path(char *cmd, char *path);
 char	*px_strjoin(char *s1, char *s2);
 void	dp_clean_char(char **dp);
-int		ft_strchr_pos(const char *s, int c);
+int	ft_strchr_pos(const char *s, int c);
+void	run_cmd(t_pipex *env, char **envp);
 
 #include <stdio.h>
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	*env;
-	char	**cmd1;
 
 	env = ft_calloc_new(1, sizeof(t_pipex));
 	if (!env)
@@ -41,19 +41,29 @@ int	main(int argc, char **argv, char **envp)
 	env->env_path = get_env_path(envp);
 
 	// specific cmd
-	cmd1 = ft_split(argv[2], ' ');
-	if (!cmd1)
-	{
-		dp_clean_char(cmd1);
+	env->cmd1_split = ft_split(argv[2], ' ');
+	env->cmd2_split = ft_split(argv[3], ' ');
+	if (!env->cmd1_split || !env->cmd2_split) // cmd2_split nog niet protected
 		msg_exit("Error.\nCould not obtain command data.", 1);
-	}
-	env->cmd_path1 = get_cmd_path(cmd1[0], env->env_path);
-	env_cmd_path2 = get_cmd_path(cmd2[0], env->env_path);
-	printf("%s", env->cmd_path);
+	env->cmd1_path = get_cmd_path(env->cmd1_split[0], env->env_path);
+	env->cmd2_path = get_cmd_path(env->cmd2_split[0], env->env_path);
+	printf("\n%s", env->cmd1_path);
+	printf("\n%s", env->cmd2_path);
+	env->process_id1 = fork();
+	if (env->process_id1 == 0)
+		run_cmd();
+	//env->process_id2 = fork();
 
 	//msg_return ("Reached the end..", 1);
 	//msg_exit("exit message", 1);
 	return (0);
+}
+
+void	run_cmd(t_pipex *env, char **envp)
+{
+	//X
+	//Y
+	//Z
 }
 
 char	*get_env_path(char **envp)

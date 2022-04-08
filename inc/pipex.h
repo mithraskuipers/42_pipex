@@ -31,12 +31,14 @@
 
 typedef struct	s_pipex
 {
-	int		pipe[2];
-	int		fd_in;
-	int		fd_out;
+	int	pipe[2];
+	int	fd_in;
+	int	fd_out;
 	char	*env_path;
-	char	*cmd_path1;
-	char	*cmd_path2;
+	char	*cmd1_path;
+	char	*cmd2_path;
+	char	**cmd1_split;
+	char	**cmd2_split;
 	pid_t	process_id1;
 	pid_t	process_id2;
 }				t_pipex;
