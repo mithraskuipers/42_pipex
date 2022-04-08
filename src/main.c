@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/03/26 22:34:40 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/03/26 22:34:40 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/04/08 19:10:08 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/04/08 19:10:08 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 
 #include "pipex.h"
 
-int	msg_return (char *cmd, int ret_status);
+int		msg_return (char *cmd, int ret_status);
 void	msg_exit(char *cmd, int exit_status);
-int	check_input_validity(int argc, char **argv, t_pipex *env);
+int		check_input_validity(int argc, char **argv, t_pipex *env);
 void	open_file(char **argv, t_pipex *env);
 void	pipes_close(t_pipex	*env);
 char	*get_env_path(char **envp);
 char	*get_cmd_path(char *cmd, char *path);
 char	*px_strjoin(char *s1, char *s2);
 void	dp_clean_char(char **dp);
-int	ft_strchr_pos(const char *s, int c);
+int		ft_strchr_pos(const char *s, int c);
 void	run_cmd(t_pipex *env, char **envp);
 
 #include <stdio.h>
@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	printf("\n%s", env->cmd2_path);
 	env->process_id1 = fork();
 	if (env->process_id1 == 0)
-		run_cmd();
+		run_cmd(env, envp);
 	//env->process_id2 = fork();
 
 	//msg_return ("Reached the end..", 1);
@@ -59,11 +59,18 @@ int	main(int argc, char **argv, char **envp)
 	return (0);
 }
 
-void	run_cmd(t_pipex *env, char **envp)
+void	run_cmd(t_pipex *env, char **envp, int cmd_n)
 {
-	//X
-	//Y
-	//Z
+	dup();
+
+	(void)env;
+	(void)envp;
+	if (cmd_n == 1)
+	{
+		dup();
+		execve(pipex.cmd, pipex.cmd_args, envp);
+		
+	}
 }
 
 char	*get_env_path(char **envp)
