@@ -25,9 +25,10 @@ char	*get_cmd_path(char *cmd, char *path);
 char	*px_strjoin(char *s1, char *s2);
 void	dp_clean_char(char **dp);
 int		ft_strchr_pos(const char *s, int c);
-//void	run_cmd(t_pipex *env, char **envp, int cmd_n, int fd_dup);
-void	run_cmd1(t_pipex *env, char **envp);
-void	run_cmd2(t_pipex *env, char **envp);
+void	fork_and_run(t_pipex *env, char **envp);
+void	get_paths(t_pipex *env, char **argv, char **envp);
+void	run_prep_end(t_pipex *env);
+void	run_cmd(t_pipex *env, char **envp, int cmd_n, int fd_dup);
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -42,36 +43,60 @@ int	main(int argc, char **argv, char **envp)
 		msg_exit("Failed to allocate memory for env.", 1);
 	if (check_input_validity(argc, argv, env))
 		return (msg_return ("Usage: ./pipex [input][cmd1][cmd2][output]", 1));
-	env->env_path = get_env_path(envp);
-
-	// specific cmd
-	env->cmd1_split = ft_split(argv[2], ' ');
-	env->cmd2_split = ft_split(argv[3], ' ');
-	if (!env->cmd1_split || !env->cmd2_split) // cmd2_split nog niet protected
-		msg_exit("Error.\nCould not obtain command data.", 1);
-	env->cmd1_path = get_cmd_path(env->cmd1_split[0], env->env_path);
-	env->cmd2_path = get_cmd_path(env->cmd2_split[0], env->env_path);
-	//printf("\n%s", env->cmd1_path);
-	//printf("\n%s", env->cmd2_path);
-
-	//msg_return ("Reached the end..", 1);
-	//msg_exit("exit message", 1);
+	get_paths(env, argv, envp);
+	if (pipe(env->pipe_fd) == -1)
+		exit(1);
+	fork_and_run(env, envp);
+	run_prep_end(env);
+	execve(env->cmd2_path, env->cmd2_split, envp);
+	close(env->fd_out);
 	return (0);
 }
 
-void	run_cmd1(t_pipex *env, char **envp)
+void	fork_and_run(t_pipex *env, char **envp)
 {
-	//dup2(env->pipe[1], 1);
-	//close(env->pipe[0]);
-	//close(env->pipe[1]);
-	execve(env->cmd1_path, env->cmd1_split, envp);
+	env->process_id1 = fork();
+	if (env->process_id1 == -1)
+		exit(1);
+	else if (env->process_id1 == 0)
+	{
+		if (close(env->pipe_fd[0]) == -1)
+			msg_exit("Failed to close the reading end of the pipe.", 1);
+		if (dup2(env->pipe_fd[1], 1) == -1)
+			msg_exit("Failed to run dup2().", 1);
+		execve(env->cmd1_path, env->cmd1_split, envp);
+	}
+	else
+	{
+		if (close(env->pipe_fd[1]) == -1)
+			msg_exit("Failed to close the writing end of the pipe.", 1);
+		if (dup2(env->pipe_fd[0], 0) == -1)
+			msg_exit("Failed to run dup2().", 1);
+		waitpid(env->process_id1, NULL, 0);
+	}
 }
 
-void	run_cmd2(t_pipex *env, char **envp)
+void	run_prep_end(t_pipex *env)
 {
-	dup2(env->pipe[1], 1);
-	//close(env->pipe[0]);
-	execve(env->cmd2_path, env->cmd2_split, envp);
+	if (dup2(env->fd_out, 1) == -1)
+		exit(1);
+}
+
+void get_paths(t_pipex *env, char **argv, char **envp)
+{
+	env->env_path = get_env_path(envp);
+	env->cmd1_split = ft_split(argv[2], ' ');
+	if (!env->cmd1_split)
+		msg_exit("Error.\nCould not obtain command data.", 1);
+	env->cmd2_split = ft_split(argv[3], ' ');
+	if (!env->cmd1_split)
+		msg_exit("Error.\nCould not obtain command data.", 1);
+	env->cmd1_path = get_cmd_path(env->cmd1_split[0], env->env_path);
+	if (!env->cmd1_path)
+		msg_exit("Error.\nCould not split command data.", 1);
+	env->cmd2_path = get_cmd_path(env->cmd2_split[0], env->env_path);
+	if (!env->cmd2_path)
+		msg_exit("Error.\nCould not split command data.", 1);
 }
 
 char	*get_env_path(char **envp)
@@ -153,12 +178,11 @@ char	*px_strjoin(char *s1, char *s2)
 	return (s3);
 }
 
-
 // NOT USED YET
 void	pipes_close(t_pipex	*env)
 {
-	close(env->pipe[0]);
-	close(env->pipe[1]);
+	close(env->pipe_fd[0]);
+	close(env->pipe_fd[1]);
 }
 
 // Input
@@ -180,9 +204,9 @@ void	open_file(char **argv, t_pipex *env)
 int		check_input_validity(int argc, char **argv, t_pipex *env)
 {
 	if (argc != 5)
-		return (msg_return ("Usage: ./pipex [input] [cmd1] [cmd2] [output]", 1));
+		return (msg_return ("Usage: ./pipex [input][cmd1][cmd2][output]", 1));
 	open_file(argv, env);
-	return (0);	
+	return (0);
 }
 
 // Messages
@@ -201,20 +225,20 @@ void	msg_exit(char *cmd, int exit_status)
 	exit(exit_status);
 }
 
-/*
 void	run_cmd(t_pipex *env, char **envp, int cmd_n, int fd_dup)
 {
 	int	fd_close;
+
+	fd_close = 0;
 	if (fd_dup == 0)
 		fd_close = 1;
 	else if (fd_dup == 1)
 		fd_close = 0;
-	dup2(env->pipe[fd_dup], fd_dup);
-	close(env->pipe[fd_close]);
+	dup2(env->pipe_fd[fd_dup], fd_dup);
+	//close(env->pipe_fd[fd_close]);
 	dup2(env->fd_in, fd_close);
 	if (cmd_n == 1)
 		execve(env->cmd1_path, env->cmd1_split, envp);
 	else if (cmd_n == 2)
 		execve(env->cmd2_path, env->cmd2_split, envp);
 }
-*/

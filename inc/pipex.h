@@ -31,7 +31,7 @@
 
 typedef struct	s_pipex
 {
-	int		pipe[2];
+	int		pipe_fd[2];
 	int		fd_in;
 	int		fd_out;
 	char	*env_path;
