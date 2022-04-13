@@ -13,6 +13,11 @@
 #ifndef PIPEX_H
 # define PIPEX_H
 
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
+#define STDIN 0
+#define STDOUT 1
+
 /* fork & open */
 #include <sys/types.h>
 
@@ -29,6 +34,9 @@
 /* own: libft */
 #include "../libft/libft.h"
 
+/* printf */
+#include <stdio.h>
+
 typedef struct	s_pipex
 {
 	int		pipe_fd[2];
@@ -41,6 +49,8 @@ typedef struct	s_pipex
 	char	**cmd2_split;
 	pid_t	process_id1;
 	pid_t	process_id2;
+	char	**envp;
+	int		ret;
 }				t_pipex;
 
 #endif

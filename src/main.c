@@ -5,34 +5,25 @@
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/08 19:10:08 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/08 19:10:08 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/04/13 11:16:16 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/04/13 11:16:16 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-//< infile ls | wc > outfile
-//make re && ./pipex infile ls wc outfile
+#include "../inc/pipex.h"
 
-#include "pipex.h"
-
-int		msg_return (char *cmd, int ret_status);
 void	msg_exit(char *cmd, int exit_status);
 int		check_input_validity(int argc, char **argv, t_pipex *env);
 void	open_file(char **argv, t_pipex *env);
-void	pipes_close(t_pipex	*env);
-char	*get_env_path(char **envp);
+void	get_paths(t_pipex *env, char **argv);
+char	*get_env_path(t_pipex *env);
 char	*get_cmd_path(char *cmd, char *path);
 char	*px_strjoin(char *s1, char *s2);
-void	dp_clean_char(char **dp);
-int		ft_strchr_pos(const char *s, int c);
-void	fork_and_run(t_pipex *env, char **envp);
-void	get_paths(t_pipex *env, char **argv, char **envp);
-void	run_prep_end(t_pipex *env);
-void	run_cmd(t_pipex *env, char **envp, int cmd_n, int fd_dup);
-
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+int		pipe_handler(t_pipex *env);
+int		pipe_stuff(t_pipex *env);
+void	child(t_pipex *env, char *cmd, int *fd);
+void	parent(t_pipex *env, char *cmd, int	*fd);
+int		run_execve(t_pipex *env, char *cmd, char **split);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -40,51 +31,51 @@ int	main(int argc, char **argv, char **envp)
 
 	env = ft_calloc_new(1, sizeof(t_pipex));
 	if (!env)
-		msg_exit("Failed to allocate memory for env.", 1);
+		msg_exit("Failed to allocate memory for env.", EXIT_FAILURE);
+	(void)envp;
+	env->envp = envp;
 	if (check_input_validity(argc, argv, env))
-		return (msg_return ("Usage: ./pipex [input][cmd1][cmd2][output]", 1));
-	get_paths(env, argv, envp);
-	if (pipe(env->pipe_fd) == -1)
-		exit(1);
-	fork_and_run(env, envp);
-	run_prep_end(env);
-	execve(env->cmd2_path, env->cmd2_split, envp);
-	close(env->fd_out);
+		msg_exit ("Usage: ./pipex [input][cmd1][cmd2][output]", 1);
+	get_paths(env, argv);
+	pipe_handler(env);
+
+
+
 	return (0);
 }
 
-void	fork_and_run(t_pipex *env, char **envp)
+void	msg_exit(char *cmd, int exit_status)
 {
-	env->process_id1 = fork();
-	if (env->process_id1 == -1)
-		exit(1);
-	else if (env->process_id1 == 0)
-	{
-		if (close(env->pipe_fd[0]) == -1)
-			msg_exit("Failed to close the reading end of the pipe.", 1);
-		if (dup2(env->pipe_fd[1], 1) == -1)
-			msg_exit("Failed to run dup2().", 1);
-		execve(env->cmd1_path, env->cmd1_split, envp);
-	}
-	else
-	{
-		if (close(env->pipe_fd[1]) == -1)
-			msg_exit("Failed to close the writing end of the pipe.", 1);
-		if (dup2(env->pipe_fd[0], 0) == -1)
-			msg_exit("Failed to run dup2().", 1);
-		waitpid(env->process_id1, NULL, 0);
-	}
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd("\n", 2);
+	exit(exit_status);
 }
 
-void	run_prep_end(t_pipex *env)
+int		check_input_validity(int argc, char **argv, t_pipex *env)
 {
-	if (dup2(env->fd_out, 1) == -1)
-		exit(1);
+	if (argc != 5)
+		msg_exit ("Usage: ./pipex [input][cmd1][cmd2][output]", 1);
+	open_file(argv, env);
+	return (0);
 }
 
-void get_paths(t_pipex *env, char **argv, char **envp)
+void	open_file(char **argv, t_pipex *env)
 {
-	env->env_path = get_env_path(envp);
+	env->fd_in = open(argv[1], O_RDONLY);
+	if (env->fd_in == -1)
+	{
+		ft_putstr_fd("no such file or directory: ", 2);
+		ft_putstr_fd(argv[1], 2);
+		ft_putstr_fd("\n", 2);
+	}
+	env->fd_out = open(argv[4], O_CREAT | O_TRUNC | O_RDWR, 0777);
+	if (env->fd_out == -1)
+		msg_exit("Could not open or create output file.", 1);
+}
+
+void get_paths(t_pipex *env, char **argv)
+{
+	env->env_path = get_env_path(env);
 	env->cmd1_split = ft_split(argv[2], ' ');
 	if (!env->cmd1_split)
 		msg_exit("Error.\nCould not obtain command data.", 1);
@@ -94,23 +85,31 @@ void get_paths(t_pipex *env, char **argv, char **envp)
 	env->cmd1_path = get_cmd_path(env->cmd1_split[0], env->env_path);
 	if (!env->cmd1_path)
 		msg_exit("Error.\nCould not split command data.", 1);
+	/*
+	if (env->cmd1_path == env->cmd1_split[0])
+	{
+		ft_putstr_fd("command not found: ", 2);
+		ft_putstr_fd(env->cmd1_split[0], 2);
+		ft_putstr_fd("\n", 2);
+	}
+	*/
 	env->cmd2_path = get_cmd_path(env->cmd2_split[0], env->env_path);
 	if (!env->cmd2_path)
 		msg_exit("Error.\nCould not split command data.", 1);
 }
 
-char	*get_env_path(char **envp)
+char	*get_env_path(t_pipex *env)
 {
 	int		i;
 	char	*env_path;
 
 	i = 0;
-	while (envp[i])
+	while (env->envp[i])
 	{
-		if (!ft_strncmp("PATH", envp[i], ft_strlen("PATH")))
+		if (!ft_strncmp("PATH", env->envp[i], ft_strlen("PATH")))
 		{
-			env_path = ft_strndup(&envp[i][ft_strchr_pos(envp[i], '=') + 1], \
-			ft_strlen(&envp[i][ft_strchr_pos(envp[i], '=')]));
+			env_path = ft_strndup(&env->envp[i][ft_strchr_pos(env->envp[i], '=') + 1], \
+			ft_strlen(&env->envp[i][ft_strchr_pos(env->envp[i], '=')]));
 			if (!env_path)
 				msg_exit("Error.\nFailed to obtain environment data.", 1);
 			return (env_path);
@@ -178,67 +177,97 @@ char	*px_strjoin(char *s1, char *s2)
 	return (s3);
 }
 
-// NOT USED YET
-void	pipes_close(t_pipex	*env)
+int		pipe_handler(t_pipex *env)
 {
-	close(env->pipe_fd[0]);
-	close(env->pipe_fd[1]);
-}
-
-// Input
-
-void	open_file(char **argv, t_pipex *env)
-{
-	env->fd_in = open(argv[1], O_RDONLY);
-	if (env->fd_in == -1)
+	pid_t	forky;
+	int		stat;
+	int 	ret;
+	
+	forky = fork();
+	if (forky == -1)
+		exit(1); // fork error
+	else if(forky == 0)
 	{
-		ft_putstr_fd("no such file or directory: ", 2);
-		ft_putstr_fd(argv[1], 2);
-		ft_putstr_fd("\n", 2);
+		pipe_stuff(env);
+		exit (5); // change to command output return
 	}
-	env->fd_out = open(argv[4], O_CREAT | O_TRUNC | O_RDWR, 0777);
-	if (env->fd_out == -1)
-		msg_exit("Could not open or create output file.", 1);
+	else
+	{
+		waitpid(-1, &stat, 0);
+	}
+	ret = WEXITSTATUS(stat);
+	return (ret);
 }
 
-int		check_input_validity(int argc, char **argv, t_pipex *env)
+int		pipe_stuff(t_pipex *env)
 {
-	if (argc != 5)
-		return (msg_return ("Usage: ./pipex [input][cmd1][cmd2][output]", 1));
-	open_file(argv, env);
-	return (0);
+	pid_t	forky;
+	int		fd[2];
+	if (pipe(fd) < 0)
+		exit(EXIT_FAILURE);
+	forky = fork();
+	if (forky < 0)
+	{
+		exit(EXIT_FAILURE);
+	}
+	if (forky == 0)
+	{
+		child(env, env->cmd1_path, fd);
+	}
+	else
+	{
+		parent(env, env->cmd2_path, fd);
+	}
+	return (1);
 }
 
-// Messages
-
-int		msg_return (char *cmd, int ret_status)
+void	child(t_pipex *env, char *cmd, int *fd)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd("\n", 2);
-	return (ret_status);
+	close (fd[0]);
+	close(STDIN);
+	dup2(env->fd_in, STDIN); // PROTECT ME
+	if (dup2(fd[1], STDOUT) == -1)
+		msg_exit("dup2() failed.", EXIT_FAILURE);
+	close(fd[1]);
+	env->ret = run_execve(env, cmd, env->cmd1_split);
+	close(STDIN);
+	close(STDOUT);
+
+	// reset me pls
+	exit(env->ret);
 }
 
-void	msg_exit(char *cmd, int exit_status)
+void	parent(t_pipex *env, char *cmd, int	*fd)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_status);
+	close (fd[1]);
+	close(STDOUT);
+	if (dup2(fd[0], STDIN) == -1)
+	{
+		msg_exit("dup2() failed.", EXIT_FAILURE);
+	}
+	dup2(env->fd_out, STDOUT);
+	close(fd[0]);
+	env->ret = run_execve(env, cmd, env->cmd2_split);
+	//execve(cmd, env->cmd2_split, env->envp);
+	close(STDIN);
 }
 
-void	run_cmd(t_pipex *env, char **envp, int cmd_n, int fd_dup)
+int		run_execve(t_pipex *env, char *cmd, char **split)
 {
-	int	fd_close;
+	pid_t forky;
+	int stat;
 
-	fd_close = 0;
-	if (fd_dup == 0)
-		fd_close = 1;
-	else if (fd_dup == 1)
-		fd_close = 0;
-	dup2(env->pipe_fd[fd_dup], fd_dup);
-	//close(env->pipe_fd[fd_close]);
-	dup2(env->fd_in, fd_close);
-	if (cmd_n == 1)
-		execve(env->cmd1_path, env->cmd1_split, envp);
-	else if (cmd_n == 2)
-		execve(env->cmd2_path, env->cmd2_split, envp);
+	forky = fork();
+	if (forky == -1)
+		exit(1); 
+	if (!forky)
+	{
+		if (execve(cmd, split, env->envp) < 0)
+		{
+			exit(127);
+		}
+	}
+	else
+		waitpid(forky, &stat, 0);
+	return (WEXITSTATUS(stat));
 }
