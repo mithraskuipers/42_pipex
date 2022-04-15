@@ -6,21 +6,37 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/15 21:04:34 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:11:21 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/15 21:25:12 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include <stdio.h>
+/* fork & open */
+# include <sys/types.h>
+
+/* fork & pipe */
 # include <unistd.h>
-# include <fcntl.h>
-# include <stdlib.h>
+
+/* wait */
 # include <sys/wait.h>
 
+/* open */
+# include <sys/stat.h>
+# include <fcntl.h>
+
+/* exit  */
+# include <stdlib.h>
+
 /* own: libft */
-#include "../libft/libft.h"
+# include "../libft/libft.h"
+
+/* printf */
+# include <stdio.h>
+
+/* own: libft */
+# include "../libft/libft.h"
 
 int		read_file(char	*file);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
