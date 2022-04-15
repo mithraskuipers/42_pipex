@@ -5,119 +5,51 @@
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/13 11:16:16 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/13 11:16:16 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/03/17 09:59:01 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/03/22 17:03:03 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
-
-void	msg_exit(char *cmd, int exit_status);
-int		check_input_validity(int argc, char **argv, t_pipex *env);
-void	open_file(char **argv, t_pipex *env);
-void	get_paths(t_pipex *env, char **argv);
-char	*get_env_path(t_pipex *env);
-char	*get_cmd_path(char *cmd, char *path);
-char	*px_strjoin(char *s1, char *s2);
-int		pipe_handler(t_pipex *env);
-int		pipe_stuff(t_pipex *env);
-void	child(t_pipex *env, char *cmd, int *fd);
-void	parent(t_pipex *env, char *cmd, int	*fd);
-int		run_execve(t_pipex *env, char *cmd, char **split);
+#include "pipex.h"
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_pipex	*env;
-
-	env = ft_calloc_new(1, sizeof(t_pipex));
-	if (!env)
-		msg_exit("Failed to allocate memory for env.", EXIT_FAILURE);
-	(void)envp;
-	env->envp = envp;
-	if (check_input_validity(argc, argv, env))
-		msg_exit ("Usage: ./pipex [input][cmd1][cmd2][output]", 1);
-	get_paths(env, argv);
-	pipe_handler(env);
-
-
-
-	return (0);
-}
-
-void	msg_exit(char *cmd, int exit_status)
-{
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_status);
-}
-
-int		check_input_validity(int argc, char **argv, t_pipex *env)
-{
-	if (argc != 5)
-		msg_exit ("Usage: ./pipex [input][cmd1][cmd2][output]", 1);
-	open_file(argv, env);
-	return (0);
-}
-
-void	open_file(char **argv, t_pipex *env)
-{
-	env->fd_in = open(argv[1], O_RDONLY);
-	if (env->fd_in == -1)
-	{
-		ft_putstr_fd("no such file or directory: ", 2);
-		ft_putstr_fd(argv[1], 2);
-		ft_putstr_fd("\n", 2);
-	}
-	env->fd_out = open(argv[4], O_CREAT | O_TRUNC | O_RDWR, 0777);
-	if (env->fd_out == -1)
-		msg_exit("Could not open or create output file.", 1);
-}
-
-void get_paths(t_pipex *env, char **argv)
-{
-	env->env_path = get_env_path(env);
-	env->cmd1_split = ft_split(argv[2], ' ');
-	if (!env->cmd1_split)
-		msg_exit("Error.\nCould not obtain command data.", 1);
-	env->cmd2_split = ft_split(argv[3], ' ');
-	if (!env->cmd1_split)
-		msg_exit("Error.\nCould not obtain command data.", 1);
-	env->cmd1_path = get_cmd_path(env->cmd1_split[0], env->env_path);
-	if (!env->cmd1_path)
-		msg_exit("Error.\nCould not split command data.", 1);
-	/*
-	if (env->cmd1_path == env->cmd1_split[0])
-	{
-		ft_putstr_fd("command not found: ", 2);
-		ft_putstr_fd(env->cmd1_split[0], 2);
-		ft_putstr_fd("\n", 2);
-	}
-	*/
-	env->cmd2_path = get_cmd_path(env->cmd2_split[0], env->env_path);
-	if (!env->cmd2_path)
-		msg_exit("Error.\nCould not split command data.", 1);
-}
-
-char	*get_env_path(t_pipex *env)
-{
-	int		i;
+	int		fdin;
+	int		fdout;
 	char	*env_path;
 
-	i = 0;
-	while (env->envp[i])
+	if (argc != 5)
 	{
-		if (!ft_strncmp("PATH", env->envp[i], ft_strlen("PATH")))
-		{
-			env_path = ft_strndup(&env->envp[i][ft_strchr_pos(env->envp[i], '=') + 1], \
-			ft_strlen(&env->envp[i][ft_strchr_pos(env->envp[i], '=')]));
-			if (!env_path)
-				msg_exit("Error.\nFailed to obtain environment data.", 1);
-			return (env_path);
-		}
+		ft_putstr_fd("$RES_REAL: ambiguous redirect\n", 2);
+		return (1);
+	}
+	fdout = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	if (fdout == -1)
+		exit(1);
+	fdin = read_file(argv[1]);
+	env_path = get_env_path(envp);
+	if (!env_path)
+		exit(1);
+	if (dup2(fdin, 0) == -1)
+		exit(1);
+	if (dup2(fdout, 1) == -1)
+		exit(1);
+	pipex(argv[2], envp, env_path);
+	run_cmd(argv[3], envp, env_path);
+	return (0);
+}
+
+void	dp_clean(char **dp)
+{
+	size_t	i;
+
+	i = 0;
+	while (dp[i])
+	{
+		free(dp[i]);
 		i++;
 	}
-	msg_exit("Error.\nFailed to obtain environment data.", 1);
-	return (NULL);
+	free(dp);
 }
 
 char	*get_cmd_path(char *cmd, char *path)
@@ -125,20 +57,20 @@ char	*get_cmd_path(char *cmd, char *path)
 	char	*dir;
 	char	*tmp_cmd_path;
 
-	while ((path) && (ft_strchr_pos(path, ':') != -1))
+	while (path && ft_strchr_pos(path, ':') > -1)
 	{
 		dir = ft_strndup(path, ft_strchr_pos(path, ':') + 1);
 		if (!dir)
 		{
 			free(dir);
-			msg_exit("Error.\nCould not obtain command path.", 1);
+			exit(1);
 		}
 		tmp_cmd_path = px_strjoin(dir, cmd);
 		if (!tmp_cmd_path)
 		{
 			free(tmp_cmd_path);
 			free(dir);
-			msg_exit("Error.\nCould not obtain command path.", 1);
+			exit(1);
 		}
 		free(dir);
 		if (access(tmp_cmd_path, F_OK) == 0)
@@ -147,6 +79,27 @@ char	*get_cmd_path(char *cmd, char *path)
 		path = path + ft_strchr_pos(path, ':') + 1;
 	}
 	return (cmd);
+}
+
+char	*get_env_path(char **envp)
+{
+	int		i;
+	char	*env_path;
+
+	i = 0;
+	while (envp[i])
+	{
+		if (!ft_strncmp("PATH", envp[i], ft_strlen("PATH")))
+		{
+			env_path = ft_strndup(&envp[i][ft_strchr_pos(envp[i], '=') + 1], \
+			ft_strlen(&envp[i][ft_strchr_pos(envp[i], '=') + 1]));
+			if (!env_path)
+				exit(1);
+			return (env_path);
+		}
+		i++;
+	}
+	exit(1);
 }
 
 char	*px_strjoin(char *s1, char *s2)
@@ -177,97 +130,111 @@ char	*px_strjoin(char *s1, char *s2)
 	return (s3);
 }
 
-int		pipe_handler(t_pipex *env)
+void	error_msg(char	*cmd, char *s)
 {
-	pid_t	forky;
-	int		stat;
-	int 	ret;
-	
-	forky = fork();
-	if (forky == -1)
-		exit(1); // fork error
-	else if(forky == 0)
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(s, 2);
+	ft_putstr_fd("\n", 2);
+}
+
+char	*ft_strndup(char *src, int len)
+{
+	int		i;
+	char	*s;
+
+	i = 0;
+	if ((!(src)) || (len == 0))
+		return (NULL);
+	s = malloc(sizeof(char) * len + 1);
+	while ((src[i]) && (i < (len - 1)))
 	{
-		pipe_stuff(env);
-		exit (5); // change to command output return
+		s[i] = src[i];
+		i++;
+	}
+	s[i] = '\0';
+	return (s);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t			i;
+	unsigned char	*s1_uc;
+	unsigned char	*s2_uc;
+
+	i = 0;
+	s1_uc = (unsigned char *)s1;
+	s2_uc = (unsigned char *)s2;
+	while (i < n)
+	{
+		if ((!s1_uc[i]) && (s1_uc[i] == s2_uc[i]))
+			return (0);
+		if (s1_uc[i] != s2_uc[i])
+			return (s1_uc[i] - s2_uc[i]);
+		i++;
+	}
+	return (0);
+}
+
+void	pipex(char *cmd, char **envp, char *env_path)
+{
+	pid_t	process_id;
+	int		fd_pipes[2];
+
+	if (pipe(fd_pipes) == -1)
+		exit(1);
+	process_id = fork();
+	if (process_id == -1)
+		exit(1);
+	else if (process_id == 0)
+	{
+		if (close(fd_pipes[0]) == -1)
+			exit(1);
+		if (dup2(fd_pipes[1], 1) == -1)
+			exit(1);
+		run_cmd(cmd, envp, env_path);
 	}
 	else
 	{
-		waitpid(-1, &stat, 0);
+		if (close(fd_pipes[1]) == -1)
+			exit(1);
+		if (dup2(fd_pipes[0], 0) == -1)
+			exit(1);
+		waitpid(process_id, NULL, 0);
 	}
-	ret = WEXITSTATUS(stat);
-	return (ret);
 }
 
-int		pipe_stuff(t_pipex *env)
+void	run_cmd(char *cmd, char **envp, char *env_path)
 {
-	pid_t	forky;
-	int		fd[2];
-	if (pipe(fd) < 0)
-		exit(EXIT_FAILURE);
-	forky = fork();
-	if (forky < 0)
+	char	**args;
+	char	*cmd_path;
+
+	args = ft_split(cmd, ' ');
+	if (!args)
 	{
-		exit(EXIT_FAILURE);
+		dp_clean(args);
+		exit(1);
 	}
-	if (forky == 0)
+	cmd_path = get_cmd_path(args[0], env_path);
+	if (!cmd_path)
 	{
-		child(env, env->cmd1_path, fd);
+		free(cmd_path);
+		dp_clean(args);
+		exit(1);
 	}
-	else
+	if (cmd_path == args[0])
 	{
-		parent(env, env->cmd2_path, fd);
+		dp_clean(args);
+		error_msg(cmd, ": command not found");
+		exit(127);
 	}
-	return (1);
+	if (execve(cmd_path, args, envp) == -1)
+		exit(1);
 }
 
-void	child(t_pipex *env, char *cmd, int *fd)
+int	read_file(char	*file)
 {
-	close (fd[0]);
-	close(STDIN);
-	dup2(env->fd_in, STDIN); // PROTECT ME
-	if (dup2(fd[1], STDOUT) == -1)
-		msg_exit("dup2() failed.", EXIT_FAILURE);
-	close(fd[1]);
-	env->ret = run_execve(env, cmd, env->cmd1_split);
-	close(STDIN);
-	close(STDOUT);
-
-	// reset me pls
-	exit(env->ret);
-}
-
-void	parent(t_pipex *env, char *cmd, int	*fd)
-{
-	close (fd[1]);
-	close(STDOUT);
-	if (dup2(fd[0], STDIN) == -1)
-	{
-		msg_exit("dup2() failed.", EXIT_FAILURE);
-	}
-	dup2(env->fd_out, STDOUT);
-	close(fd[0]);
-	env->ret = run_execve(env, cmd, env->cmd2_split);
-	//execve(cmd, env->cmd2_split, env->envp);
-	close(STDIN);
-}
-
-int		run_execve(t_pipex *env, char *cmd, char **split)
-{
-	pid_t forky;
-	int stat;
-
-	forky = fork();
-	if (forky == -1)
-		exit(1); 
-	if (!forky)
-	{
-		if (execve(cmd, split, env->envp) < 0)
-		{
-			exit(127);
-		}
-	}
-	else
-		waitpid(forky, &stat, 0);
-	return (WEXITSTATUS(stat));
+	if (access(file, F_OK) == 0)
+		return (open(file, O_RDONLY, 0777));
+	error_msg(file, ": no such file or directory");
+	return (-1);
 }
