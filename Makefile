@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/15 21:13:40 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/04/15 21:18:26 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/04/15 21:20:59 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,8 @@ SRC_DIR		= ./src/
 
 SRCS		=	$(SRC_DIR)main.c \
 				$(SRC_DIR)get_paths.c \
+				$(SRC_DIR)pipex.c \
+				$(SRC_DIR)error.c \
 				$(SRC_DIR)strjoin.c \
 				$(SRC_DIR)read.c \
 				$(SRC_DIR)run_cmd.c
