@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/15 21:04:34 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:04:36 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/15 21:11:21 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 void	error_msg(char	*cmd, char *s);;
-void	dp_clean(char **dp);
 void	pipex(char *cmd, char **envp, char *env_path);
 void	run_cmd(char *cmd, char **envp, char *env_path);
 

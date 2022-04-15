@@ -6,7 +6,7 @@
 #    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/21 15:29:25 by mikuiper      #+#    #+#                  #
-#    Updated: 2022/04/07 15:12:27 by mikuiper      ########   odam.nl          #
+#    Updated: 2022/04/15 21:10:51 by mikuiper      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,7 +73,8 @@ SRCS =	ft_atoi.c \
 		ft_calloc_new.c \
 		ft_strndup.c \
 		ft_strchr_pos.c \
-		dp_clean_char.c
+		dp_clean_char.c \
+		dp_clean_void.c
 
 OFILES = $(SRCS:.c=.o)
 INCLUDES = libft.h
