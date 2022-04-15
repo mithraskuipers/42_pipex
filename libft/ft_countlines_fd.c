@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/16 12:25:14 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/01/16 12:28:38 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/15 21:06:39 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,11 @@ int	ft_countlines_fd(int fd)
 	buff[0] = '\0';
 	nbytes = 1;
 	count = 0;
-	while(nbytes)
+	while (nbytes)
 	{
 		nbytes = read(fd, buff, 1);
-		if(ft_strchr(buff, '\n') || ft_strchr(buff, '\0'))
-		{
+		if (ft_strchr(buff, '\n') || ft_strchr(buff, '\0'))
 			count++;
-		}
 	}
 	return (count);
 }

@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/07 16:52:06 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/07 14:54:10 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/15 21:07:56 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ char	*ft_strchr(const char *s, int c)
 		return (&s_uc[i]);
 	return (NULL);
 }
-
 
 int	ft_strchr2(const char *s, int c)
 {

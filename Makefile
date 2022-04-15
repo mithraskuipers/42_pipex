@@ -3,7 +3,7 @@ NAME		= pipex
 CC			= gcc
 CFLAGS		= -Wall -Wextra -Werror
 
-INCS	= -I./inc
+INCS	=	-I./inc
 
 SRC_DIR		= ./src/
 
@@ -14,9 +14,6 @@ OBJS		= $(SRCS:.c=.o)
 FT_DIR	= 	./libft/
 FT_MAKE	= $(MAKE) -C $(FT_DIR)
 FT_LIB		= -L$(FT_DIR) -lft
-
-.PHONY: all clean fclean re
-
 
 GREEN = \033[92m
 NOCOLOR = \033[0;38m
@@ -39,7 +36,7 @@ clean:
 	@echo "$(GREEN)[pipex] - Finished running clean!$(NOCOLOR)"
 
 fclean:
-	#@$(FT_MAKE) fclean
+	@$(FT_MAKE) fclean
 	@echo "$(GREEN)[pipex] - Running fclean..$(NOCOLOR)"
 	@echo "$(GREEN)[pipex] - Removing object files..$(NOCOLOR)"
 	@echo "$(GREEN)[pipex] - Finished running fclean!$(NOCOLOR)"
@@ -47,3 +44,5 @@ fclean:
 	@$(RM) $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re
