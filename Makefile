@@ -1,5 +1,16 @@
-NAME		= pipex
+# **************************************************************************** #
+#                                                                              #
+#                                                         ::::::::             #
+#    Makefile                                           :+:    :+:             #
+#                                                      +:+                     #
+#    By: mikuiper <mikuiper@student.codam.nl>         +#+                      #
+#                                                    +#+                       #
+#    Created: 2022/04/15 21:13:40 by mikuiper      #+#    #+#                  #
+#    Updated: 2022/04/15 21:18:26 by mikuiper      ########   odam.nl          #
+#                                                                              #
+# **************************************************************************** #
 
+NAME		= pipex
 CC			= gcc
 CFLAGS		= -Wall -Wextra -Werror
 
@@ -7,12 +18,16 @@ INCS	=	-I./inc
 
 SRC_DIR		= ./src/
 
-SRCS		= $(SRC_DIR)main.c
+SRCS		=	$(SRC_DIR)main.c \
+				$(SRC_DIR)get_paths.c \
+				$(SRC_DIR)strjoin.c \
+				$(SRC_DIR)read.c \
+				$(SRC_DIR)run_cmd.c
 
 OBJS		= $(SRCS:.c=.o)
 
-FT_DIR	= 	./libft/
-FT_MAKE	= $(MAKE) -C $(FT_DIR)
+FT_DIR	=	./libft/
+FT_MAKE	=	$(MAKE) -C $(FT_DIR)
 FT_LIB		= -L$(FT_DIR) -lft
 
 GREEN = \033[92m
