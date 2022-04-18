@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/15 21:04:49 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:20:41 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/18 17:47:54 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,3 +38,7 @@ int	main(int argc, char **argv, char **envp)
 	run_cmd(argv[3], envp, env_path);
 	return (0);
 }
+
+TODO
+if infile niet bestaat dan dup2 niet protecten
+if infile wel bestaat dan dup2 wel protecten
