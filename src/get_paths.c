@@ -6,11 +6,32 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/15 21:12:44 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:12:57 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/18 19:15:59 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+char	*get_env_path(char **envp)
+{
+	int		i;
+	char	*env_path;
+
+	i = 0;
+	while (envp[i])
+	{
+		if (!ft_strncmp("PATH", envp[i], ft_strlen("PATH")))
+		{
+			env_path = ft_strndup(&envp[i][ft_strchr_pos(envp[i], '=') + 1], \
+			ft_strlen(&envp[i][ft_strchr_pos(envp[i], '=') + 1]));
+			if (!env_path)
+				exit(1);
+			return (env_path);
+		}
+		i++;
+	}
+	exit(1);
+}
 
 char	*get_cmd_path(char *cmd, char *path)
 {	
@@ -39,25 +60,4 @@ char	*get_cmd_path(char *cmd, char *path)
 		path = path + ft_strchr_pos(path, ':') + 1;
 	}
 	return (cmd);
-}
-
-char	*get_env_path(char **envp)
-{
-	int		i;
-	char	*env_path;
-
-	i = 0;
-	while (envp[i])
-	{
-		if (!ft_strncmp("PATH", envp[i], ft_strlen("PATH")))
-		{
-			env_path = ft_strndup(&envp[i][ft_strchr_pos(envp[i], '=') + 1], \
-			ft_strlen(&envp[i][ft_strchr_pos(envp[i], '=') + 1]));
-			if (!env_path)
-				exit(1);
-			return (env_path);
-		}
-		i++;
-	}
-	exit(1);
 }

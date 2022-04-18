@@ -6,16 +6,15 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/15 21:17:50 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:18:07 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/18 19:20:06 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	run_cmd(char *cmd, char **envp, char *env_path)
+void	run_cmd(char *cmd, t_env *env)
 {
 	char	**args;
-	char	*cmd_path;
 
 	args = ft_split(cmd, ' ');
 	if (!args)
@@ -23,19 +22,19 @@ void	run_cmd(char *cmd, char **envp, char *env_path)
 		dp_clean_void(args);
 		exit(1);
 	}
-	cmd_path = get_cmd_path(args[0], env_path);
-	if (!cmd_path)
+	env->cmd_path = get_cmd_path(args[0], env->env_path);
+	if (!env->cmd_path)
 	{
-		free(cmd_path);
+		free(env->cmd_path);
 		dp_clean_void(args);
 		exit(1);
 	}
-	if (cmd_path == args[0])
+	if (env->cmd_path == args[0])
 	{
 		dp_clean_void(args);
 		error_msg(cmd, ": command not found");
 		exit(127);
 	}
-	if (execve(cmd_path, args, envp) == -1)
+	if (execve(env->cmd_path, args, env->envp) == -1)
 		exit(1);
 }
