@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   error.c                                            :+:    :+:            */
+/*   ft_strlcpy.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/15 21:20:15 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 09:41:27 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/10/06 19:27:01 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/10/27 18:42:16 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	msg_cmd_error(char	*cmd, char *s)
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
+	size_t	i;
 
-void	msg_exit(char *s, int exit_code)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_code);
+	i = 0;
+	if (!(dst) || (!(src)) || (dstsize == 0))
+		return (ft_strlen(src));
+	while ((src[i]) && (i < (dstsize - 1)))
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (ft_strlen(src));
 }

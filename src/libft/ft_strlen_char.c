@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   error.c                                            :+:    :+:            */
+/*   ft_strlen_char.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/15 21:20:15 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 09:41:27 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/01/18 18:11:47 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/04/15 21:07:20 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	msg_cmd_error(char	*cmd, char *s)
+int	ft_strlen_char(char *s, int c)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
+	int	i;
 
-void	msg_exit(char *s, int exit_code)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_code);
+	i = 0;
+	if (!s)
+		return (i);
+	if (c == '\0')
+	{
+		while (s[i])
+			i++;
+		return (i);
+	}
+	else
+	{
+		while (s[i] && s[i] != c)
+		{
+			i++;
+		}
+		return (i);
+	}
 }

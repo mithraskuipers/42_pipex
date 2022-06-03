@@ -1,27 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   error.c                                            :+:    :+:            */
+/*   ft_isdigit.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/15 21:20:15 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 09:41:27 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/10/05 12:23:06 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/10/28 14:56:21 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	msg_cmd_error(char	*cmd, char *s)
+int	ft_isdigit(int c)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
-
-void	msg_exit(char *s, int exit_code)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_code);
+	return ((c >= '0') && (c <= '9'));
 }

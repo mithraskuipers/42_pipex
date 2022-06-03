@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/15 21:12:44 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/18 19:15:59 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/19 09:04:58 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ char	*get_env_path(char **envp)
 			env_path = ft_strndup(&envp[i][ft_strchr_pos(envp[i], '=') + 1], \
 			ft_strlen(&envp[i][ft_strchr_pos(envp[i], '=') + 1]));
 			if (!env_path)
-				exit(1);
+				exit(EXIT_FAILURE);
 			return (env_path);
 		}
 		i++;
 	}
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 char	*get_cmd_path(char *cmd, char *path)
@@ -44,14 +44,14 @@ char	*get_cmd_path(char *cmd, char *path)
 		if (!dir)
 		{
 			free(dir);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		tmp_cmd_path = px_strjoin(dir, cmd);
 		if (!tmp_cmd_path)
 		{
 			free(tmp_cmd_path);
 			free(dir);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		free(dir);
 		if (access(tmp_cmd_path, F_OK) == 0)

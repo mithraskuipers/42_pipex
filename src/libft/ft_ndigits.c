@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   error.c                                            :+:    :+:            */
+/*   ft_ndigits.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/15 21:20:15 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 09:41:27 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/11/17 10:49:11 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/11/17 11:55:22 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	msg_cmd_error(char	*cmd, char *s)
+int	ft_ndigits(long n)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
+	int	ndigits;
 
-void	msg_exit(char *s, int exit_code)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_code);
+	ndigits = 0;
+	if (n < 0)
+	{
+		ndigits++;
+		n = n * -1;
+	}
+	if (n == 0)
+		return (1);
+	while (n > 0)
+	{
+		n = n / 10;
+		ndigits++;
+	}
+	return (ndigits);
 }

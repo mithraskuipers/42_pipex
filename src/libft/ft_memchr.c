@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   error.c                                            :+:    :+:            */
+/*   ft_memchr.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/15 21:20:15 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 09:41:27 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/10/09 14:53:34 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/10/29 08:49:17 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	msg_cmd_error(char	*cmd, char *s)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
+	unsigned char	*s_uc;
+	unsigned char	c_uc;
+	size_t			i;
 
-void	msg_exit(char *s, int exit_code)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_code);
+	i = 0;
+	s_uc = (unsigned char *)s;
+	c_uc = (unsigned char)c;
+	while (i < n)
+	{
+		if (s_uc[i] == c_uc)
+			return (&(s_uc[i]));
+		i++;
+	}
+	return (NULL);
 }

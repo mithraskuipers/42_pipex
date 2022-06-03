@@ -1,27 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   error.c                                            :+:    :+:            */
+/*   ft_memcpy.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/15 21:20:15 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 09:41:27 by mikuiper      ########   odam.nl         */
+/*   Created: 2021/10/06 14:38:25 by mikuiper      #+#    #+#                 */
+/*   Updated: 2021/10/29 08:19:41 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	msg_cmd_error(char	*cmd, char *s)
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
+	unsigned char	*dst_uc;
+	unsigned char	*src_uc;
+	size_t			i;
 
-void	msg_exit(char *s, int exit_code)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_code);
+	dst_uc = (unsigned char *)dst;
+	src_uc = (unsigned char *)src;
+	i = 0;
+	if ((dst == NULL) && (src == NULL))
+		return (NULL);
+	while (i < n)
+	{
+		dst_uc[i] = src_uc[i];
+		i++;
+	}
+	return (dst);
 }

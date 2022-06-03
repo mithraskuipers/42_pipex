@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   error.c                                            :+:    :+:            */
+/*   ft_countlines_fd.c                                 :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/04/15 21:20:15 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 09:41:27 by mikuiper      ########   odam.nl         */
+/*   Created: 2022/01/16 12:25:14 by mikuiper      #+#    #+#                 */
+/*   Updated: 2022/04/15 21:06:39 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-void	msg_cmd_error(char	*cmd, char *s)
+int	ft_countlines_fd(int fd)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
+	char	buff[1];
+	int		count;
+	int		nbytes;
 
-void	msg_exit(char *s, int exit_code)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	exit(exit_code);
+	buff[0] = '\0';
+	nbytes = 1;
+	count = 0;
+	while (nbytes)
+	{
+		nbytes = read(fd, buff, 1);
+		if (ft_strchr(buff, '\n') || ft_strchr(buff, '\0'))
+			count++;
+	}
+	return (count);
 }

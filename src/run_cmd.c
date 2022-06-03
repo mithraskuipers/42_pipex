@@ -6,7 +6,7 @@
 /*   By: mikuiper <mikuiper@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/15 21:17:50 by mikuiper      #+#    #+#                 */
-/*   Updated: 2022/04/19 07:26:06 by mikuiper      ########   odam.nl         */
+/*   Updated: 2022/04/19 09:42:08 by mikuiper      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	run_cmd(char *cmd, t_env *env)
 	if (env->cmd_path == args[0])
 	{
 		dp_clean_void(args);
-		msg_cmd_error(cmd, ": command not found", 2);
+		msg_cmd_error(cmd, ": command not found");
 		exit(127);
 	}
 	if (execve(env->cmd_path, args, env->envp) == -1)
