@@ -54,7 +54,10 @@
 ## Overview
 `pipex`, an emulation program of  `<`, `|`, `>`, `heredoc`, `<<`, and `>>` in CLI, executes shell commands passed as arguments and redirects the result to the other file.
 
-## Usages
+## :hammer_and_wrench: Building
+`./pipex <file1> <cmd1> <cmd2> ... <cmdn> <file2>`
+
+## :runner: Running
 `git clone` the repository and execute the `make` command inside the cloned directory.
 
 ```shell
@@ -71,33 +74,6 @@ $ ./pipex here_doc <LIMITER> <cmd1> <cmd2> <file>
 ./pipex infile cat cat cat cat cat outfile
 ./pipex here_doc END "grep foo" "wc -l" outfile
 ```
-
-## Description
-- Allowed as many commands as you want between the input/output files
-- Allowed commands specified by the path
-- Avoided pipe blocking in concurrency
-- Set exit status `1` for a general error and `127` for not command found
-- Set close-on-flag to opened file descriptors
-
-
-
-
-
-
-
-
-
-
-
-##  Usage
-
-### :computer: Requirements
-
-**`gcc` compiler**
-
-### :hammer_and_wrench: Building
-
-### :runner: Running
 
 #### Questions?
 Please connect with me on LinkedIn or send an e-mail.
