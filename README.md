@@ -55,7 +55,7 @@
 `pipex`, an emulation program of  `<`, `|`, `>`, `heredoc`, `<<`, and `>>` in CLI, executes shell commands passed as arguments and redirects the result to the other file.
 
 ## :hammer_and_wrench: Building
-`./pipex <file1> <cmd1> <cmd2> ... <cmdn> <file2>`
+`gcc -o pipex *.c -Llibft -lft`
 
 ## :runner: Running
 `git clone` the repository and execute the `make` command inside the cloned directory.
